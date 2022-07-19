@@ -21,11 +21,14 @@
     <ClInclude Include="include\Pinewood\Pinewood.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Pinewood\Error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pinewood\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Pinewood.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\pch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

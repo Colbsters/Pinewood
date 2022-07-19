@@ -1,3 +1,4 @@
 #pragma once
 
-void foo();
+#include <Pinewood/Core.h>
+#include <Pinewood/Error.h>
