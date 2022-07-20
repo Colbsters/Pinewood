@@ -95,8 +95,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\Pinewood\Core.h" />
+    <ClInclude Include="include\Pinewood\EnumSupport.h" />
     <ClInclude Include="include\Pinewood\Error.h" />
     <ClInclude Include="include\Pinewood\Pinewood.h" />
+    <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
   </ItemGroup>
   <ItemGroup>

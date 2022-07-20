@@ -27,6 +27,12 @@
     <ClInclude Include="include\Pinewood\Core.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Pinewood\Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pinewood\EnumSupport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
