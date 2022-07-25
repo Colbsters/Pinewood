@@ -33,9 +33,15 @@
     <ClInclude Include="include\Pinewood\EnumSupport.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pinewood\Window\Window.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

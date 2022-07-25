@@ -3,6 +3,8 @@
 #include <Pinewood/Error.h>
 #include <Pinewood/EnumSupport.h>
 
+#include <atomic>
+
 namespace Pinewood
 {
 	enum class WindowCreateFlags : uint32_t
@@ -16,10 +18,13 @@ namespace Pinewood
 		Minimized		= 0x0020,
 		Maximized		= 0x0030,
 
-		DefaultStyle	= MinimizeButton | MaximizeButton | SystemMenu | Resizeable | Show,
+		DefaultStyle	= MinimizeButton | MaximizeButton | SystemMenu | Resizeable,
 
 		// Other flags
-		Async			= 0x0100,
+		Async			= 0x0100, // Not yet implemented. Creates and updates window on separate thread (message handlers will need o be thread-safe)
+
+		// Other values
+		ShowBitMask		= 0x0030 // Bitmask for the show field
 	};
 
 	enum class WindowShowMode : uint32_t
@@ -34,6 +39,8 @@ namespace Pinewood
 	{
 		PW_DEFINE_ENUMCLASS_OPERATOR_OR(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_AND(WindowCreateFlags);
+		PW_DEFINE_ENUMCLASS_OPERATOR_EQUALS(WindowCreateFlags);
+		PW_DEFINE_ENUMCLASS_OPERATOR_NOT(WindowCreateFlags);
 	}
 	using namespace operators;
 
@@ -48,6 +55,8 @@ namespace Pinewood
 	class Window
 	{
 	public:
+		using NativeHandle = void*;
+
 		Result Create(const WindowCreateInfo& createInfo);
 		Result Destroy();
 
@@ -56,12 +65,17 @@ namespace Pinewood
 
 		Result SetShowMode(WindowShowMode showMode);
 
+		NativeHandle GetNativeHandle();
 
 	private:
 #if PW_PLATFORM_WINDOWS
+		static intptr_t __stdcall WindowProc(void*, uint32_t, uintptr_t, intptr_t);
+		static void AsyncWindowThread();
+		Result CreateWindowImpl(const WindowCreateInfo&);
+		Result CreateWindowAsync(const WindowCreateInfo&);
+
 		void* m_window;
-		void* m_thread;
-		bool m_isRunning;
+		std::atomic_bool m_isRunning;
 #endif // PW_PLATFORM_WINDOWS
 	};
 }
