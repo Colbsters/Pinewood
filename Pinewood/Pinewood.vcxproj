@@ -59,7 +59,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_USE_EXCEPTIONS;PW_ARCH_X64;PW_DEBUG;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_USE_EXCEPTIONS;PW_ARCH_X64;PW_DEBUG;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -78,7 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_USE_EXCEPTIONS;PW_ARCH_X64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_USE_EXCEPTIONS;PW_ARCH_X64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -98,6 +98,7 @@
     <ClInclude Include="include\Pinewood\EnumSupport.h" />
     <ClInclude Include="include\Pinewood\Error.h" />
     <ClInclude Include="include\Pinewood\Pinewood.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HLContext.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h" />
@@ -108,6 +109,11 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\vendor\glad\glad.vcxproj">
+      <Project>{a12242f2-52f2-470c-a285-a5b00f55bacb}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
