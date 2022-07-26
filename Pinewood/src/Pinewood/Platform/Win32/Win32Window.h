@@ -37,18 +37,25 @@ namespace Pinewood
 		std::vector<wchar_t> wideTitle(len + 1);
 		mbsrtowcs_s(&len, wideTitle.data(), len + 1, &narrowTitleCStr, len, &state);
 
-		// m_window will be set by WindowProc()
-		if (!CreateWindowExW(
-			WS_EX_OVERLAPPEDWINDOW,
-			reinterpret_cast<LPCWSTR>(static_cast<uintptr_t>(g_wndClassAtom)),
-			wideTitle.data(),
+
+		uint32_t windowStyle =
 			WS_OVERLAPPED |
 			WS_THICKFRAME |
 			WS_CAPTION |
 			((createInfo.flags & WindowCreateFlags::SystemMenu) ? WS_SYSMENU : 0) |
 			((createInfo.flags & WindowCreateFlags::MaximizeButton) ? WS_MAXIMIZEBOX : 0) |
-			((createInfo.flags & WindowCreateFlags::MinimizeButton) ? WS_MINIMIZEBOX : 0),
-			createInfo.x, createInfo.y, createInfo.width, createInfo.height,
+			((createInfo.flags & WindowCreateFlags::MinimizeButton) ? WS_MINIMIZEBOX : 0);
+		RECT windowRect{ createInfo.x, createInfo.y, createInfo.x + createInfo.width, createInfo.y + createInfo.height };
+		AdjustWindowRectEx(&windowRect, windowStyle, false, WS_EX_OVERLAPPEDWINDOW);
+
+		// m_window will be set by WindowProc()
+		if (!CreateWindowExW(
+			WS_EX_OVERLAPPEDWINDOW,
+			reinterpret_cast<LPCWSTR>(static_cast<uintptr_t>(g_wndClassAtom)),
+			wideTitle.data(),
+			windowStyle,
+			windowRect.left, windowRect.top,
+			windowRect.right - windowRect.left, windowRect.bottom - windowRect.top,
 			nullptr, nullptr, g_win32Instance, this))
 		{
 			g_numWindows--; // Nevermind, a window wasn't created
