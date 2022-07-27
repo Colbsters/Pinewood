@@ -22,6 +22,7 @@ extern "C" {
 
     int GLAD_WGL_VERSION_1_0 = 0;
     int GLAD_WGL_ARB_create_context = 0;
+    int GLAD_WGL_ARB_create_context_profile = 0;
     int GLAD_WGL_ARB_extensions_string = 0;
     int GLAD_WGL_ARB_pixel_format = 0;
     int GLAD_WGL_EXT_extensions_string = 0;
@@ -104,6 +105,7 @@ extern "C" {
 
     static int glad_wgl_find_extensions_wgl(HDC hdc) {
         GLAD_WGL_ARB_create_context = glad_wgl_has_extension(hdc, "WGL_ARB_create_context");
+        GLAD_WGL_ARB_create_context_profile = glad_wgl_has_extension(hdc, "WGL_ARB_create_context_profile");
         GLAD_WGL_ARB_extensions_string = glad_wgl_has_extension(hdc, "WGL_ARB_extensions_string");
         GLAD_WGL_ARB_pixel_format = glad_wgl_has_extension(hdc, "WGL_ARB_pixel_format");
         GLAD_WGL_EXT_extensions_string = glad_wgl_has_extension(hdc, "WGL_EXT_extensions_string");
