@@ -42,6 +42,9 @@
     <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

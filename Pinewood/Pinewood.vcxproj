@@ -59,7 +59,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_USE_EXCEPTIONS;PW_ARCH_X64;PW_DEBUG;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_ARCH_X64;PW_DEBUG;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -78,7 +78,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_USE_EXCEPTIONS;PW_ARCH_X64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>PW_PLATFORM_WINDOWS;PW_RENDERER_OPENGL4;PW_ARCH_X64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -99,6 +99,7 @@
     <ClInclude Include="include\Pinewood\Error.h" />
     <ClInclude Include="include\Pinewood\Pinewood.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLContext.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h" />
