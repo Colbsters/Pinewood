@@ -17,38 +17,8 @@ namespace Pinewood
 		NotInitialized		= 0x80000004,
 	};
 
-	class Exception
-		:public std::exception
-	{
-	public:
-		Exception(Result result)
-			:m_result(result)
-		{}
-
-		virtual const char* what() const noexcept override
-		{
-			return "Pinewood Exception";
-		}
-
-		inline Result GetErrorCode() const noexcept
-		{
-			return m_result;
-		}
-
-	private:
-		Result m_result;
-	};
-
 	constexpr bool IsError(Result result)
 	{
 		return static_cast<uint32_t>(result) & 0x80000000;
 	}
-
-	inline void ThrowException(Result result)
-	{
-#ifdef PW_USE_EXCEPTIONS
-		throw Exception(result);
-#endif
-	}
-
 }

@@ -59,7 +59,6 @@ namespace Pinewood
 			nullptr, nullptr, g_win32Instance, this))
 		{
 			g_numWindows--; // Nevermind, a window wasn't created
-			ThrowException(Result::SystemError);
 			return Result::SystemError;
 		}
 
@@ -183,7 +182,6 @@ namespace Pinewood
 
 				if (!(g_wndClassAtom = RegisterClassExW(&wndClass)))
 				{
-					ThrowException(Result::SystemError);
 					return Result::SystemError;
 				}
 			}
