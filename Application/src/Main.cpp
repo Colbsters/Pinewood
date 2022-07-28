@@ -2,7 +2,7 @@
 
 #include <thread>
 
-using namespace Pinewood::operators;
+using namespace Pinewood::Operators;
 
 int main()
 {

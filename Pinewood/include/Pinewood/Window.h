@@ -35,14 +35,14 @@ namespace Pinewood
 		Maximized	= 3
 	};
 
-	namespace operators
+	namespace Operators
 	{
 		PW_DEFINE_ENUMCLASS_OPERATOR_OR(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_AND(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_EQUALS(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_NOT(WindowCreateFlags);
 	}
-	using namespace operators;
+	using namespace Operators;
 
 	struct WindowCreateInfo
 	{
