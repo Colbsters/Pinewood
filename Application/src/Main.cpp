@@ -6,10 +6,10 @@ using namespace Pinewood::operators;
 
 int main()
 {
+	auto window = std::make_shared<Pinewood::Window>();
+	auto context = std::make_shared<Pinewood::HLContext>();
 
-	Pinewood::Window window;
-
-	window.Create({
+	window->Create({
 		.title = "Pinewood Application Window",
 		.x = 100,
 		.y = 100,
@@ -18,9 +18,16 @@ int main()
 		.flags = Pinewood::WindowCreateFlags::DefaultStyle | Pinewood::WindowCreateFlags::Show | Pinewood::WindowCreateFlags::Async
 	});
 
+	context->Create({
+		.window = window,
+		.swapInterval = 1
+	});
+
 	// No need to call update, it's done automatically on a separate thread
-	while (window.IsRunning())
-		std::this_thread::sleep_for(std::chrono::seconds{ 1 }); // I know it's a test, but I still don't want to hog the CPU
+	while (window->IsRunning())
+	{
+		context->SwapBuffers();
+	}
 
 	return 0;
 }

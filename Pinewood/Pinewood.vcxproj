@@ -101,9 +101,11 @@
     <ClInclude Include="include\Pinewood\Renderer\HLContext.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h" />
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Pinewood\Renderer\HLContext.cpp" />
     <ClCompile Include="src\Pinewood\Window\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
