@@ -329,6 +329,8 @@ namespace Pinewood
 			return Result::NotInitialized;
 
 		delete static_cast<GladGLContext*>(m_gl);
+
+		MakeObsolete();
 		wglDeleteContext(static_cast<HGLRC>(m_renderContext));
 
 		// Prevent double free
@@ -349,8 +351,6 @@ namespace Pinewood
 
 	Result HLContext::SetSwapInterval(uint32_t interval)
 	{
-		MakeCurrent();
-
 		if (!wglSwapIntervalEXT(interval))
 			return Result::SystemError;
 
@@ -359,8 +359,6 @@ namespace Pinewood
 
 	inline Result HLContext::ResizeSwapChain(uint16_t width, uint32_t height)
 	{
-		MakeCurrent();
-
 		const auto* gl = static_cast<GladGLContext*>(m_gl);
 
 		gl->Viewport(0, 0, width, height);
