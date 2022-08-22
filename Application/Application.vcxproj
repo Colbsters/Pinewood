@@ -98,6 +98,9 @@
     <ProjectReference Include="..\Pinewood\Pinewood.vcxproj">
       <Project>{e1ce3e1c-c4a1-4584-a67d-1dfff231216f}</Project>
     </ProjectReference>
+    <ProjectReference Include="..\PWMath\PWMath.vcxproj">
+      <Project>{29d3c83c-425f-428c-8aa2-ccd50109f2b7}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

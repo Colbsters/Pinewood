@@ -116,6 +116,9 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\PWMath\PWMath.vcxproj">
+      <Project>{29d3c83c-425f-428c-8aa2-ccd50109f2b7}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\vendor\glad\glad.vcxproj">
       <Project>{a12242f2-52f2-470c-a285-a5b00f55bacb}</Project>
     </ProjectReference>

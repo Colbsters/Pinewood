@@ -11,6 +11,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "vendor", "vendor", "{F311C0
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "glad", "vendor\glad\glad.vcxproj", "{A12242F2-52F2-470C-A285-A5B00F55BACB}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "PWMath", "PWMath\PWMath.vcxproj", "{29D3C83C-425F-428C-8AA2-CCD50109F2B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -42,6 +44,14 @@ Global
 		{A12242F2-52F2-470C-A285-A5B00F55BACB}.Release|x64.ActiveCfg = Release|x64
 		{A12242F2-52F2-470C-A285-A5B00F55BACB}.Release|x64.Build.0 = Release|x64
 		{A12242F2-52F2-470C-A285-A5B00F55BACB}.Release|x86.ActiveCfg = Release|x64
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Debug|x64.ActiveCfg = Debug|x64
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Debug|x64.Build.0 = Debug|x64
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Debug|x86.ActiveCfg = Debug|Win32
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Debug|x86.Build.0 = Debug|Win32
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Release|x64.ActiveCfg = Release|x64
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Release|x64.Build.0 = Release|x64
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Release|x86.ActiveCfg = Release|Win32
+		{29D3C83C-425F-428C-8AA2-CCD50109F2B7}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
