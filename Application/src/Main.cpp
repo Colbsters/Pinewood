@@ -9,7 +9,7 @@ int main()
 {
 	Pinewood::Window window;
 	Pinewood::HLContext context;
-	auto renderInterface = std::make_shared<Pinewood::HLRenderInterface>();
+	Pinewood::HLRenderInterface renderInterface;
 
 	window.Create({
 		.title = "Pinewood Application Window",
@@ -25,18 +25,18 @@ int main()
 		.swapInterval = 1
 		});
 
-	renderInterface->Create({
+	renderInterface.Create({
 		.context = context
 		});
 
-	renderInterface->SetClearColor({ 0.2f, 0.3f, 0.5f, 1.0f });
+	renderInterface.SetClearColor({ 0.2f, 0.3f, 0.5f, 1.0f });
 
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
 		context.SwapBuffers();
 
-		renderInterface->ClearTarget(static_cast<uint32_t>(Pinewood::ClearTargetFlags::Color));
+		renderInterface.ClearTarget(static_cast<uint32_t>(Pinewood::ClearTargetFlags::Color));
 
 		// Render here
 	}

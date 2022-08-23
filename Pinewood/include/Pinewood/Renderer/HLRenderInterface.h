@@ -29,8 +29,13 @@ namespace Pinewood
 	class HLRenderInterface
 	{
 	public:
+		HLRenderInterface() = default;
+		HLRenderInterface(const HLRenderInterface&) = default;
+		HLRenderInterface(HLRenderInterface&& rhs) noexcept :m_details(std::move(rhs.m_details)) {}
+		~HLRenderInterface() = default;
 
-		~HLRenderInterface();
+		HLRenderInterface& operator=(const HLRenderInterface&) = default;
+		HLRenderInterface& operator=(HLRenderInterface&& rhs) noexcept { m_details = std::move(rhs.m_details); return *this; }
 
 		Result Create(const HLRenderInterfaceCreateInfo& createInfo);
 
@@ -51,9 +56,10 @@ namespace Pinewood
 		HLContext GetContext();
 
 	private:
-#if PW_RENDERER_OPENGL4
-		HLContext m_context;
-		void* m_gl;
-#endif
+		class Details;
+		
+		HLRenderInterface(std::shared_ptr<Details>& details) :m_details(details) {}
+
+		std::shared_ptr<Details> m_details;
 	};
 }
