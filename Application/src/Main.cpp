@@ -8,7 +8,7 @@ using namespace Pinewood::Operators;
 int main()
 {
 	Pinewood::Window window;
-	auto context = std::make_shared<Pinewood::HLContext>();
+	Pinewood::HLContext context;
 	auto renderInterface = std::make_shared<Pinewood::HLRenderInterface>();
 
 	window.Create({
@@ -20,7 +20,7 @@ int main()
 		.flags = Pinewood::WindowCreateFlags::DefaultStyle | Pinewood::WindowCreateFlags::Show | Pinewood::WindowCreateFlags::Async
 		});
 
-	context->Create({
+	context.Create({
 		.window = window,
 		.swapInterval = 1
 		});
@@ -34,7 +34,7 @@ int main()
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
-		context->SwapBuffers();
+		context.SwapBuffers();
 
 		renderInterface->ClearTarget(static_cast<uint32_t>(Pinewood::ClearTargetFlags::Color));
 

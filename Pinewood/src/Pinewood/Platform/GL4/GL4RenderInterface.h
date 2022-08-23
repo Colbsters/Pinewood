@@ -13,7 +13,7 @@ namespace Pinewood
 	{
 		// Save the context and cache the gl functions
 		m_context = createInfo.context;
-		m_gl = m_context->GetNativeHandle().gl;
+		m_gl = m_context.GetNativeHandle().gl;
 
 		return Result::Success;
 	}
@@ -21,7 +21,7 @@ namespace Pinewood
 	Result HLRenderInterface::Destroy()
 	{
 		m_gl = nullptr;
-		m_context = nullptr;
+		m_context = HLContext{};
 
 		return Result::Success;
 	}
@@ -53,7 +53,7 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	std::shared_ptr<HLContext> HLRenderInterface::GetContext()
+	HLContext HLRenderInterface::GetContext()
 	{
 		return m_context;
 	}

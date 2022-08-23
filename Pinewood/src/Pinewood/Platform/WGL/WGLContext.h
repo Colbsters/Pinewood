@@ -14,6 +14,27 @@ namespace Pinewood
 
 	thread_local static HLContext* g_currentContext;
 
+	class HLContext::Details
+		:std::enable_shared_from_this<HLContext::Details>
+	{
+	public:
+		HDC deviceContext;
+		HGLRC renderContext;
+		GladGLContext gl;
+
+		~Details();
+
+		static Result InitializeWGL();
+		static void __stdcall DebugMessageCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void* userParam);
+		Result MakeObsolete();
+		Result Destroy();
+	};
+
+	HLContext::Details::~Details()
+	{
+		Destroy();
+	}
+
 	static GLADapiproc glLoadFunc(const char* name)
 	{
 		static HMODULE glInstance;
@@ -31,7 +52,7 @@ namespace Pinewood
 		return reinterpret_cast<GLADapiproc>(GetProcAddress(glInstance, name));
 	}
 
-	Result HLContext::InitializeWGL()
+	Result HLContext::Details::InitializeWGL()
 	{
 		Result result;
 
@@ -102,42 +123,7 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	Result HLContext::MakeCurrent()
-	{
-		// The context is already current, don't need to do anything
-		if (g_currentContext == this)
-			return Result::Success;
-
-		// If an error occurs, the previous context will be made invalid
-		g_currentContext = nullptr;
-
-		// Try to make it current
-		if (!wglMakeCurrent(static_cast<HDC>(m_deviceContext), static_cast<HGLRC>(m_renderContext)))
-			return Result::SystemError;
-
-		// The context was successfully made current
-		g_currentContext = this;
-
-		return Result::Success;
-	}
-
-	Result HLContext::MakeObsolete()
-	{
-		// The context is already current, don't need to do anything
-		if (g_currentContext == nullptr)
-			return Result::Success;
-
-		// If an error occurs, the previous context will be made invalid anyways
-		g_currentContext = nullptr;
-
-		// Try to make it current
-		if (!wglMakeCurrent(nullptr, nullptr))
-			return Result::SystemError;
-
-		return Result::Success;
-	}
-
-	void __stdcall HLContext::DebugMessageCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void* userParam)
+	void __stdcall HLContext::Details::DebugMessageCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void* userParam)
 	{
 		const char* messageSource;
 		const char* messageType;
@@ -224,9 +210,54 @@ namespace Pinewood
 		std::printf("OpenGL Error (source = %s, type = %s, id = %u, severity = %s):\n%s\n\n", messageSource, messageType, id, messageSeverity, message);
 	}
 
-	HLContext::~HLContext()
+	Result HLContext::Details::MakeObsolete()
 	{
-		Destroy();
+		// The context is already current, don't need to do anything
+		if (g_currentContext == nullptr)
+			return Result::Success;
+
+		// If an error occurs, the previous context will be made invalid anyways
+		g_currentContext = nullptr;
+
+		// Try to make it current
+		if (!wglMakeCurrent(nullptr, nullptr))
+			return Result::SystemError;
+
+		return Result::Success;
+	}
+
+	Result HLContext::MakeCurrent()
+	{
+		// The context is already current, don't need to do anything
+		if (g_currentContext == this)
+			return Result::Success;
+
+		// If an error occurs, the previous context will be made invalid
+		g_currentContext = nullptr;
+
+		// Try to make it current
+		if (!wglMakeCurrent(m_details->deviceContext, m_details->renderContext))
+			return Result::SystemError;
+
+		// The context was successfully made current
+		g_currentContext = this;
+
+		return Result::Success;
+	}
+	
+	Result HLContext::Details::Destroy()
+	{
+		if (!renderContext)
+			return Result::NotInitialized;
+
+		MakeObsolete();
+		wglDeleteContext(renderContext);
+
+		// Prevent double free
+		renderContext = nullptr;
+		deviceContext = nullptr;
+
+		return Result::Success;
 	}
 
 	Result HLContext::Create(const HLContextCreateInfo& createInfo)
@@ -235,7 +266,7 @@ namespace Pinewood
 			std::lock_guard<std::mutex> lock{ g_wglLoadMutex };
 			if (!g_wglLoaded)
 			{
-				auto result = InitializeWGL();
+				auto result = Details::InitializeWGL();
 				if (IsError(result))
 					return result;
 
@@ -288,8 +319,9 @@ namespace Pinewood
 		if (!renderContext)
 			return Result::SystemError;
 
-		m_renderContext = renderContext;
-		m_deviceContext = deviceContext;
+		m_details = std::make_shared<Details>();
+		m_details->renderContext = renderContext;
+		m_details->deviceContext = deviceContext;
 
 		Result result = MakeCurrent();
 		if (IsError(result))
@@ -298,23 +330,20 @@ namespace Pinewood
 			return result;
 		}
 
-		GladGLContext* gl = new GladGLContext;
-		if (!gladLoadGLContext(gl, glLoadFunc))
+		if (!gladLoadGLContext(&m_details->gl, glLoadFunc))
 		{
 			// Clean up
-			delete gl;
-			MakeObsolete();
+			m_details->MakeObsolete();
 			wglDeleteContext(renderContext);
 
 			return Result::UnknownError;
 		}
-		m_gl = gl;
 
-		gl->Enable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-		gl->DebugMessageCallback(DebugMessageCallback, this);
+		m_details->gl.Enable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		m_details->gl.DebugMessageCallback(Details::DebugMessageCallback, this);
 #if !PW_DEBUG
-		gl->DebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, nullptr, GL_FALSE);
-		gl->DebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
+		m_details->gl.DebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_LOW, 0, nullptr, GL_FALSE);
+		m_details->gl.DebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DEBUG_SEVERITY_NOTIFICATION, 0, nullptr, GL_FALSE);
 #endif // ^^^ !PW_DEBUG
 
 		result = SetSwapInterval(createInfo.swapInterval);
@@ -324,27 +353,9 @@ namespace Pinewood
 		return Result::Success;
 	}
 	
-	Result HLContext::Destroy()
-	{
-		if ((!m_gl) || (!m_renderContext))
-			return Result::NotInitialized;
-
-		delete static_cast<GladGLContext*>(m_gl);
-
-		MakeObsolete();
-		wglDeleteContext(static_cast<HGLRC>(m_renderContext));
-
-		// Prevent double free
-		m_gl = nullptr;
-		m_renderContext = nullptr;
-		m_deviceContext = nullptr;
-
-		return Result::Success;
-	}
-	
 	Result HLContext::SwapBuffers()
 	{
-		if (!::SwapBuffers(static_cast<HDC>(m_deviceContext)))
+		if (!::SwapBuffers(m_details->deviceContext))
 			return Result::SystemError;
 
 		return Result::Success;
@@ -358,20 +369,18 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	inline Result HLContext::ResizeSwapChain(uint16_t width, uint32_t height)
+	Result HLContext::ResizeSwapChain(uint16_t width, uint32_t height)
 	{
-		const auto* gl = static_cast<GladGLContext*>(m_gl);
+		m_details->gl.Viewport(0, 0, width, height);
 
-		gl->Viewport(0, 0, width, height);
-
-		if (gl->IsEnabled(GL_SCISSOR_TEST))
-			gl->Scissor(0, 0, width, height);
+		if (m_details->gl.IsEnabled(GL_SCISSOR_TEST))
+			m_details->gl.Scissor(0, 0, width, height);
 
 		return Result::Success;
 	}
 
 	HLContext::NativeHandle HLContext::GetNativeHandle()
 	{
-		return NativeHandle{ m_renderContext, m_gl };
+		return NativeHandle{ m_details->renderContext, &m_details->gl };
 	}
 }

@@ -19,7 +19,13 @@ namespace Pinewood
 		// OpenGL 4.5 native handle
 		using NativeHandle = struct { void* renderContext, * gl; };
 		
-		~HLContext();
+		HLContext() = default;
+		HLContext(const HLContext&) = default;
+		HLContext(HLContext&& rhs) noexcept :m_details(std::move(rhs.m_details)) {}
+		~HLContext() = default;
+
+		HLContext& operator=(const HLContext&) = default;
+		HLContext& operator=(HLContext&& rhs) noexcept { m_details = std::move(rhs.m_details); return *this; }
 
 		// Creates a context for a window
 		Result Create(const HLContextCreateInfo& createInfo);
@@ -49,15 +55,10 @@ namespace Pinewood
 		NativeHandle GetNativeHandle();
 
 	private:
-#if PW_RENDERER_OPENGL4
+		class Details;
 
-		static Result InitializeWGL();
-		Result MakeObsolete();
-		static void __stdcall DebugMessageCallback(uint32_t source, uint32_t type, uint32_t id, uint32_t severity, int32_t length, const char* message, const void* userParam);
+		HLContext(std::shared_ptr<Details> details) :m_details(details) {}
 
-		void* m_deviceContext;
-		void* m_renderContext;
-		void* m_gl;
-#endif // ^^^ PW_RENDERER_OPENGL4
+		std::shared_ptr<Details> m_details;
 	};
 }

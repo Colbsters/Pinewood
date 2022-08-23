@@ -23,7 +23,7 @@ namespace Pinewood
 
 	struct HLRenderInterfaceCreateInfo
 	{
-		std::shared_ptr<HLContext> context;
+		HLContext context;
 	};
 
 	class HLRenderInterface
@@ -48,11 +48,11 @@ namespace Pinewood
 		// Clears the render target
 		Result ClearTarget(uint32_t flags);
 
-		std::shared_ptr<HLContext> GetContext();
+		HLContext GetContext();
 
 	private:
 #if PW_RENDERER_OPENGL4
-		std::shared_ptr<HLContext> m_context;
+		HLContext m_context;
 		void* m_gl;
 #endif
 	};
