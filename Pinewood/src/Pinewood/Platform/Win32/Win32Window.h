@@ -6,6 +6,7 @@
 
 namespace Pinewood
 {
+
 	static std::mutex g_win32InfoMutex;
 	// Win32 info (guarded by g_win32InfoMutex)
 	static ATOM g_wndClassAtom;
@@ -14,7 +15,7 @@ namespace Pinewood
 	// Used for creating windows in the async window thread
 	static std::mutex g_windowCreateMutex;
 	static const WindowCreateInfo* volatile g_windowCreateInfo;
-	static Window* volatile g_windowCreatePtr;
+	static Window* volatile g_windowCreatePtr; // I would've used Window::Detail, but it's private
 	static volatile Result g_windowCreateResult;
 	static std::atomic_bool g_windowCreateFinished;
 
@@ -23,7 +24,21 @@ namespace Pinewood
 
 	static std::atomic_uint64_t g_numWindows;
 
-	Result Window::CreateWindowImpl(const WindowCreateInfo& createInfo)
+	class Window::Details
+		:std::enable_shared_from_this<Window::Details>
+	{
+	public:
+		HWND window;
+		bool isRunning;
+
+		Result CreateWindowImpl(const WindowCreateInfo& createInfo);
+		Result CreateWindowAsync(const WindowCreateInfo& createInfo);
+		Result CreateWindowAsync(const WindowCreateInfo& createInfo, Window* ptr);
+		static void AsyncWindowThread();
+		static intptr_t CALLBACK WindowProc(HWND window, UINT message, WPARAM wparam, LPARAM lparam);
+	};
+
+	Result Window::Details::CreateWindowImpl(const WindowCreateInfo& createInfo)
 	{
 		// Could've use std::codecvt, but that's deprecated
 		// Might replace it with a better solution, but it works for now
@@ -63,20 +78,20 @@ namespace Pinewood
 		}
 
 		if (uint32_t show = (createInfo.flags & WindowCreateFlags::ShowBitMask))
-			ShowWindow(reinterpret_cast<HWND>(m_window),
+			ShowWindow(reinterpret_cast<HWND>(window),
 				(show == WindowCreateFlags::Show) ? SW_SHOW :
 				((show == WindowCreateFlags::Minimized) ? SW_MINIMIZE : SW_MAXIMIZE));
 
 		return Result::Success;
 	}
 
-	Result Window::CreateWindowAsync(const WindowCreateInfo& createInfo)
+	Result Window::Details::CreateWindowAsync(const WindowCreateInfo& createInfo, Window* ptr)
 	{
 		std::lock_guard lock{ g_windowCreateMutex };
 
 		// Setup parameters
 		g_windowCreateInfo = &createInfo;
-		g_windowCreatePtr = this;
+		g_windowCreatePtr = ptr;
 		g_windowCreateFinished = false;
 
 		// Create the thread if it wasn't already created
@@ -93,7 +108,7 @@ namespace Pinewood
 		return g_windowCreateResult;
 	}
 
-	void Window::AsyncWindowThread()
+	void Window::Details::AsyncWindowThread()
 	{
 		MSG msg;
 		while (g_numWindows > 0)
@@ -107,7 +122,7 @@ namespace Pinewood
 
 			if (g_windowCreateFinished == false) // Create a new window if needed
 			{
-				g_windowCreateResult = g_windowCreatePtr->CreateWindowImpl(*g_windowCreateInfo);
+				g_windowCreateResult = g_windowCreatePtr->m_details->CreateWindowImpl(*g_windowCreateInfo);
 				g_windowCreateFinished = true;
 			}
 
@@ -117,36 +132,33 @@ namespace Pinewood
 		g_windowThreadInitialized = false;
 	}
 
-	// void* is used instead of HWND so i don't need to define HWND in a public header file
-	intptr_t CALLBACK Window::WindowProc(void* hwndVoidPtr, uint32_t message, uintptr_t wparam, intptr_t lparam)
+	intptr_t CALLBACK Window::Details::WindowProc(HWND window, UINT message, WPARAM wparam, LPARAM lparam)
 	{
-		// Use hwnd from now on
-		const auto window = reinterpret_cast<HWND>(hwndVoidPtr);
-		Window* windowPtr = nullptr;
+		Window::Details* windowDetails = nullptr;
 
 		if (message == WM_NCCREATE)
 		{
 			// Setup window user pointer and window information (m_window and m_isRunning)
 			const auto* createStruct = reinterpret_cast<CREATESTRUCTW*>(lparam);
-			windowPtr = reinterpret_cast<Window*>(createStruct->lpCreateParams);
+			windowDetails = reinterpret_cast<Window::Details*>(createStruct->lpCreateParams);
 
-			SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(windowPtr));
+			SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(windowDetails));
 
-			windowPtr->m_window = window;
-			windowPtr->m_isRunning = true;
+			windowDetails->window = window;
+			windowDetails->isRunning = true;
 		}
 		else
 			// Get window user pointer
-			windowPtr = reinterpret_cast<Window*>(GetWindowLongPtrW(window, GWLP_USERDATA));
+			windowDetails = reinterpret_cast<Window::Details*>(GetWindowLongPtrW(window, GWLP_USERDATA));
 
-		if (windowPtr)
+		if (windowDetails)
 		{
 			switch (message)
 			{
 				// TODO: More message handling
 			case WM_DESTROY:
 				PostQuitMessage(0);
-				windowPtr->m_isRunning = false;
+				windowDetails->isRunning = false;
 				g_numWindows--;
 				break;
 			}
@@ -171,7 +183,7 @@ namespace Pinewood
 					.cbSize = sizeof(wndClass),
 					.style = CS_OWNDC,
 					// It works, just HWND and void* aren't really compatible (they are both pointers). For more info, see WindowProc()'s definition
-					.lpfnWndProc = reinterpret_cast<WNDPROC>(&WindowProc),
+					.lpfnWndProc = Details::WindowProc,
 					.cbWndExtra = sizeof(Window*),
 					.hInstance = g_win32Instance,
 					.hIcon = LoadIconW(0, IDI_APPLICATION),
@@ -181,25 +193,22 @@ namespace Pinewood
 				};
 
 				if (!(g_wndClassAtom = RegisterClassExW(&wndClass)))
-				{
 					return Result::SystemError;
-				}
 			}
 		}
 
+		m_details = std::make_shared<Details>();
 		g_numWindows++;
-		if (createInfo.flags & WindowCreateFlags::Async)
-			return CreateWindowAsync(createInfo);
+		// Create the thread only if WindowCreateFlags::Async was specified and we are not the window thread (if we were then a dead lock would occur)
+		if ((createInfo.flags & WindowCreateFlags::Async) && (g_windowThread.get_id() != std::this_thread::get_id()))
+			return m_details->CreateWindowAsync(createInfo, this);
 		else
-			return CreateWindowImpl(createInfo);
+			return m_details->CreateWindowImpl(createInfo);
 	}
 
 	Result Window::Destroy()
 	{
-		if (!m_window)
-			return Result::NotInitialized;
-
-		if (!DestroyWindow(reinterpret_cast<HWND>(m_window)))
+		if (!DestroyWindow(m_details->window))
 			return Result::SystemError;
 
 		return Result::Success;
@@ -208,7 +217,7 @@ namespace Pinewood
 	Result Window::Update()
 	{
 		MSG msg;
-		while (PeekMessageW(&msg, reinterpret_cast<HWND>(m_window), 0, 0, PM_REMOVE))
+		while (PeekMessageW(&msg, m_details->window, 0, 0, PM_REMOVE))
 		{
 			TranslateMessage(&msg);
 			DispatchMessageW(&msg);
@@ -219,12 +228,12 @@ namespace Pinewood
 
 	bool Window::IsRunning()
 	{
-		return m_isRunning;
+		return m_details->isRunning;
 	}
 
 	Result Window::SetShowMode(WindowShowMode showMode)
 	{
-		ShowWindow(reinterpret_cast<HWND>(m_window),
+		ShowWindow(m_details->window,
 			(showMode == WindowShowMode::Hide) ? SW_HIDE :
 			((showMode == WindowShowMode::Show) ? SW_SHOW :
 			((showMode == WindowShowMode::Minimized) ? SW_MINIMIZE : SW_MAXIMIZE)));
@@ -234,6 +243,6 @@ namespace Pinewood
 	
 	Window::NativeHandle Window::GetNativeHandle()
 	{
-		return m_window;
+		return m_details->window;
 	}
 }

@@ -244,7 +244,8 @@ namespace Pinewood
 		}
 
 		// Get the device context
-		HWND windowHandle = static_cast<HWND>(createInfo.window->GetNativeHandle());
+		Window window = createInfo.window;
+		HWND windowHandle = static_cast<HWND>(window.GetNativeHandle());
 		HDC deviceContext = GetDC(windowHandle);
 		if (!deviceContext)
 			return Result::SystemError;

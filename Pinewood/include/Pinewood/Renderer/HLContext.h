@@ -8,7 +8,7 @@ namespace Pinewood
 {
 	struct HLContextCreateInfo
 	{
-		std::shared_ptr<Window> window;
+		Window window;
 		uint32_t swapInterval = 0;
 	};
 

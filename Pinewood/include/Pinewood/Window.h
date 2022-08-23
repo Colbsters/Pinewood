@@ -57,6 +57,14 @@ namespace Pinewood
 	public:
 		using NativeHandle = void*;
 
+		Window() = default;
+		Window(const Window& rhs) = default;
+		Window(Window&& rhs) noexcept :m_details(std::move(rhs.m_details)) {}
+		~Window() = default;
+
+		Window& operator=(const Window&) = default;
+		Window& operator=(Window&& rhs) noexcept { m_details = std::move(rhs.m_details); return *this; }
+
 		Result Create(const WindowCreateInfo& createInfo);
 		Result Destroy();
 
@@ -68,14 +76,10 @@ namespace Pinewood
 		NativeHandle GetNativeHandle();
 
 	private:
-#if PW_PLATFORM_WINDOWS
-		static intptr_t __stdcall WindowProc(void*, uint32_t, uintptr_t, intptr_t);
-		static void AsyncWindowThread();
-		Result CreateWindowImpl(const WindowCreateInfo&);
-		Result CreateWindowAsync(const WindowCreateInfo&);
+		class Details;
 
-		void* m_window;
-		std::atomic_bool m_isRunning;
-#endif // PW_PLATFORM_WINDOWS
+		Window(std::shared_ptr<Details> details) :m_details(details) {}
+
+		std::shared_ptr<Details> m_details;
 	};
 }
