@@ -36,7 +36,7 @@ int main()
 	{
 		context.SwapBuffers();
 
-		renderInterface.ClearTarget(static_cast<uint32_t>(Pinewood::ClearTargetFlags::Color));
+		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
 
 		// Render here
 	}

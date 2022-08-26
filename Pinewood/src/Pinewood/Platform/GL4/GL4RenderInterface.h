@@ -61,12 +61,12 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	Result HLRenderInterface::ClearTarget(uint32_t flags)
+	Result HLRenderInterface::ClearTarget(ClearTargetFlags flags)
 	{
 		m_details->gl->Clear(
-			(flags & ClearTargetFlags::Color) ? GL_COLOR_BUFFER_BIT : 0 &
-			(flags & ClearTargetFlags::Depth) ? GL_DEPTH_BUFFER_BIT : 0 &
-			(flags & ClearTargetFlags::Stencil) ? GL_STENCIL_BUFFER_BIT : 0);
+			static_cast<uint32_t>(flags & ClearTargetFlags::Color) ? GL_COLOR_BUFFER_BIT : 0 &
+			static_cast<uint32_t>(flags & ClearTargetFlags::Depth) ? GL_DEPTH_BUFFER_BIT : 0 &
+			static_cast<uint32_t>(flags & ClearTargetFlags::Stencil) ? GL_STENCIL_BUFFER_BIT : 0);
 		return Result::Success;
 	}
 

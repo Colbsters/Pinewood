@@ -6,7 +6,7 @@
 
 namespace Pinewood
 {
-	enum class ClearTargetFlags
+	enum class ClearTargetFlags : uint32_t
 	{
 		Color	= 0x01,
 		Depth	= 0x02,
@@ -17,7 +17,6 @@ namespace Pinewood
 	{
 		PW_DEFINE_ENUMCLASS_OPERATOR_OR(ClearTargetFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_AND(ClearTargetFlags);
-		PW_DEFINE_ENUMCLASS_OPERATOR_EQUALS(ClearTargetFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_NOT(ClearTargetFlags);
 	}
 
@@ -51,7 +50,7 @@ namespace Pinewood
 		Result SetClearStencil(uint32_t stencil);
 		
 		// Clears the render target
-		Result ClearTarget(uint32_t flags);
+		Result ClearTarget(ClearTargetFlags flags);
 
 		HLContext GetContext();
 

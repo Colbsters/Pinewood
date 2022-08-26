@@ -57,9 +57,9 @@ namespace Pinewood
 			WS_OVERLAPPED |
 			WS_THICKFRAME |
 			WS_CAPTION |
-			((createInfo.flags & WindowCreateFlags::SystemMenu) ? WS_SYSMENU : 0) |
-			((createInfo.flags & WindowCreateFlags::MaximizeButton) ? WS_MAXIMIZEBOX : 0) |
-			((createInfo.flags & WindowCreateFlags::MinimizeButton) ? WS_MINIMIZEBOX : 0);
+			(static_cast<uint32_t>(createInfo.flags & WindowCreateFlags::SystemMenu) ? WS_SYSMENU : 0) |
+			(static_cast<uint32_t>(createInfo.flags & WindowCreateFlags::MaximizeButton) ? WS_MAXIMIZEBOX : 0) |
+			(static_cast<uint32_t>(createInfo.flags & WindowCreateFlags::MinimizeButton) ? WS_MINIMIZEBOX : 0);
 		RECT windowRect{ createInfo.x, createInfo.y, createInfo.x + createInfo.width, createInfo.y + createInfo.height };
 		AdjustWindowRectEx(&windowRect, windowStyle, false, WS_EX_OVERLAPPEDWINDOW);
 
@@ -76,8 +76,9 @@ namespace Pinewood
 			g_numWindows--; // Nevermind, a window wasn't created
 			return Result::SystemError;
 		}
-
-		if (uint32_t show = (createInfo.flags & WindowCreateFlags::ShowBitMask))
+		
+		WindowCreateFlags show = (createInfo.flags & WindowCreateFlags::ShowBitMask);
+		if (static_cast<uint32_t>(show))
 			ShowWindow(reinterpret_cast<HWND>(window),
 				(show == WindowCreateFlags::Show) ? SW_SHOW :
 				((show == WindowCreateFlags::Minimized) ? SW_MINIMIZE : SW_MAXIMIZE));
@@ -200,7 +201,7 @@ namespace Pinewood
 		m_details = std::make_shared<Details>();
 		g_numWindows++;
 		// Create the thread only if WindowCreateFlags::Async was specified and we are not the window thread (if we were then a dead lock would occur)
-		if ((createInfo.flags & WindowCreateFlags::Async) && (g_windowThread.get_id() != std::this_thread::get_id()))
+		if (static_cast<uint32_t>(createInfo.flags & WindowCreateFlags::Async) && (g_windowThread.get_id() != std::this_thread::get_id()))
 			return m_details->CreateWindowAsync(createInfo, this);
 		else
 			return m_details->CreateWindowImpl(createInfo);

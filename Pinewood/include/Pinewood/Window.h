@@ -39,7 +39,6 @@ namespace Pinewood
 	{
 		PW_DEFINE_ENUMCLASS_OPERATOR_OR(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_AND(WindowCreateFlags);
-		PW_DEFINE_ENUMCLASS_OPERATOR_EQUALS(WindowCreateFlags);
 		PW_DEFINE_ENUMCLASS_OPERATOR_NOT(WindowCreateFlags);
 	}
 	using namespace Operators;
@@ -49,7 +48,7 @@ namespace Pinewood
 		std::string_view title;	// Window title
 		int16_t x, y;			// Position of the window
 		uint16_t width, height;	// Size of the window client area
-		uint32_t flags = static_cast<uint32_t>(WindowCreateFlags::DefaultStyle);	// Create flags and style
+		WindowCreateFlags flags = WindowCreateFlags::DefaultStyle;	// Create flags and style
 	};
 
 	class Window
