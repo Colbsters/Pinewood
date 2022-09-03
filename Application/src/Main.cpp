@@ -10,6 +10,13 @@ int main()
 	Pinewood::Window window;
 	Pinewood::HLContext context;
 	Pinewood::HLRenderInterface renderInterface;
+	Pinewood::HLBuffer vertexBuffer;
+
+	PWMath::Vector2F32 vertices[3]{
+		{  0.0,  0.5 },
+		{ -0.5, -0.5 },
+		{  0.5, -0.5 },
+	};
 
 	window.Create({
 		.title = "Pinewood Application Window",
@@ -30,6 +37,13 @@ int main()
 		});
 
 	renderInterface.SetClearColor({ 0.2f, 0.3f, 0.5f, 1.0f });
+
+	vertexBuffer.Create({
+		.context = context,
+		.usage = Pinewood::HLBufferUsage::Mutable,
+		.size = sizeof(vertices),
+		.data = vertices
+		});
 
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())

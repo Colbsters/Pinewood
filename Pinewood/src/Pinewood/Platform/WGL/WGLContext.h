@@ -60,7 +60,7 @@ namespace Pinewood
 		Window window;
 		result = window.Create({
 			.title = "WGL dummy context window",
-			.flags = 0
+			.flags = static_cast<Pinewood::WindowCreateFlags>(0)
 		});
 		if (IsError(result))
 			return result;
