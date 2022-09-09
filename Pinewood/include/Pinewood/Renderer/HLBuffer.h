@@ -74,6 +74,8 @@ namespace Pinewood
 
 		NativeHandle GetNativeHandle();
 
+		bool IsInitialized();
+
 	private:
 		class Details;
 

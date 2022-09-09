@@ -48,10 +48,22 @@
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4RenderInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Buffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pinewood\Renderer\HLVertexBinding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Pinewood\Renderer\HLLayout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Buffer.h">
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Layout.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4VertexBinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -69,6 +81,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Pinewood\Renderer\HLBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pinewood\Renderer\HLLayout.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Pinewood\Renderer\HLVertexBinding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

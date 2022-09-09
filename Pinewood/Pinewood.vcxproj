@@ -94,21 +94,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HLLayout.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HLVertexBinding.h" />
     <ClInclude Include="include\Pinewood\Core.h" />
     <ClInclude Include="include\Pinewood\EnumSupport.h" />
     <ClInclude Include="include\Pinewood\Error.h" />
     <ClInclude Include="include\Pinewood\Pinewood.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLContext.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4VertexBinding.h" />
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Layout.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4RenderInterface.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Buffer.h" />
     <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h" />
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Pinewood\Renderer\HLVertexBinding.cpp" />
+    <ClCompile Include="src\Pinewood\Renderer\HLLayout.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLRenderInterface.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLContext.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLBuffer.cpp" />

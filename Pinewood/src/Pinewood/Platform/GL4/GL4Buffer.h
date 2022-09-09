@@ -85,4 +85,9 @@ namespace Pinewood
 	{
 		return m_details->buffer;
 	}
+	
+	bool HLBuffer::IsInitialized()
+	{
+		return m_details && m_details->gl;
+	}
 }

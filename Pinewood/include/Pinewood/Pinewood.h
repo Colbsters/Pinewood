@@ -8,4 +8,6 @@
 #include <Pinewood/Renderer/HLContext.h>
 #include <Pinewood/Renderer/HLRenderInterface.h>
 #include <Pinewood/Renderer/HLBuffer.h>
+#include <Pinewood/Renderer/HLLayout.h>
+#include <Pinewood/Renderer/HLVertexBinding.h>
 #endif // ^^^ PW_RENDERER_OPENGL4

@@ -11,11 +11,21 @@ int main()
 	Pinewood::HLContext context;
 	Pinewood::HLRenderInterface renderInterface;
 	Pinewood::HLBuffer vertexBuffer;
+	Pinewood::HLLayout vertexLayout;
+	Pinewood::HLVertexBinding vertexBinding;
 
 	PWMath::Vector2F32 vertices[3]{
 		{  0.0,  0.5 },
 		{ -0.5, -0.5 },
 		{  0.5, -0.5 },
+	};
+
+	Pinewood::HLLayoutElement layoutElements[]{
+		{ 0, Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 }
+	};
+
+	Pinewood::HLLayoutBinding layoutBindings[]{
+		{ 0, sizeof(PWMath::Vector2F32) }
 	};
 
 	window.Create({
@@ -43,6 +53,18 @@ int main()
 		.usage = Pinewood::HLBufferUsage::Mutable,
 		.size = sizeof(vertices),
 		.data = vertices
+		});
+
+	vertexLayout.Create({
+		.context = context,
+		.elements = layoutElements,
+		.bindings = layoutBindings
+		});
+
+	vertexBinding.Create({
+		.context = context,
+		.vertexBuffers = std::span{ &vertexBuffer, 1 },
+		.vertexLayout = vertexLayout
 		});
 
 	// No need to call update, it's done automatically on a separate thread
