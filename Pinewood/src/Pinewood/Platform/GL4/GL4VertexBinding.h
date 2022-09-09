@@ -150,4 +150,9 @@ namespace Pinewood
 	{
 		return m_details->vao;
 	}
+	
+	bool HLVertexBinding::IsInitialized()
+	{
+		return m_details && m_details->gl;
+	}
 }

@@ -383,4 +383,9 @@ namespace Pinewood
 	{
 		return NativeHandle{ m_details->renderContext, &m_details->gl };
 	}
+	
+	bool HLContext::IsInitialized()
+	{
+		return m_details && m_details->renderContext;
+	}
 }

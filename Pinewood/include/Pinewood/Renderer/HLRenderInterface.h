@@ -54,6 +54,8 @@ namespace Pinewood
 
 		HLContext GetContext();
 
+		bool IsInitialized();
+
 	private:
 		class Details;
 		

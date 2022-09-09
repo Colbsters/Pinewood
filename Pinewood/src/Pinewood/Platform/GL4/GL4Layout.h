@@ -23,6 +23,7 @@ namespace Pinewood
 	Result HLLayout::Details::Destroy()
 	{
 		layoutElements.clear();
+		bindings.clear();
 		return Result::Success;
 	}
 
@@ -43,5 +44,10 @@ namespace Pinewood
 	HLLayout::NativeHandle HLLayout::GetNativeHandle()
 	{
 		return HLLayout::NativeHandle{ { m_details->layoutElements.data(), m_details->layoutElements.size() }, { m_details->bindings.data(), m_details->bindings.size() } };
+	}
+	
+	bool HLLayout::IsInitialized()
+	{
+		return m_details && (!m_details->layoutElements.empty()) && (!m_details->bindings.empty());
 	}
 }

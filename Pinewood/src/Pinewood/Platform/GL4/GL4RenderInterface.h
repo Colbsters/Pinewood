@@ -74,4 +74,9 @@ namespace Pinewood
 	{
 		return m_details->context;
 	}
+	
+	bool HLRenderInterface::IsInitialized()
+	{
+		return m_details && m_details->gl;
+	}
 }

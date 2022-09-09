@@ -212,6 +212,8 @@ namespace Pinewood
 		if (!DestroyWindow(m_details->window))
 			return Result::SystemError;
 
+		m_details->window = nullptr;
+
 		return Result::Success;
 	}
 
@@ -245,5 +247,10 @@ namespace Pinewood
 	Window::NativeHandle Window::GetNativeHandle()
 	{
 		return m_details->window;
+	}
+	
+	bool Window::IsInitialized()
+	{
+		return m_details && m_details->window;
 	}
 }
