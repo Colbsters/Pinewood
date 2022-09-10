@@ -8,7 +8,7 @@ namespace Pinewood
 	constexpr static GLType GetGLType(HLLayoutElementType type)
 	{
 		GLType glType = { 0, 0, false };
-		switch (static_cast<uint32_t>(type) >> 8)
+		switch (static_cast<uint32_t>(type) >> 4)
 		{
 		case 0x0:
 			glType.type = GL_UNSIGNED_BYTE;
@@ -54,7 +54,7 @@ namespace Pinewood
 			return {};
 		}
 
-		glType.size = static_cast<uint32_t>(type) & 0x3;
+		glType.size = (static_cast<uint32_t>(type) & 0x3) + 1;
 
 		return glType;
 	}

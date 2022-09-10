@@ -70,6 +70,30 @@ namespace Pinewood
 		return Result::Success;
 	}
 
+	Result HLRenderInterface::BindVertexBinding(const HLVertexBinding& vertexBinding)
+	{
+		// Get a copy that's not const
+		auto vb = vertexBinding;
+
+		m_details->gl->BindVertexArray(vb.GetNativeHandle());
+
+		return Result::Success;
+	}
+
+	Result HLRenderInterface::Draw(uint32_t startIndex, uint32_t count)
+	{
+		m_details->gl->DrawArrays(GL_TRIANGLES, startIndex, count);
+
+		return Result::Success;
+	}
+
+	Result HLRenderInterface::DrawIndexed(uint32_t count)
+	{
+		m_details->gl->DrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+
+		return Result::Success;
+	}
+
 	HLContext HLRenderInterface::GetContext()
 	{
 		return m_details->context;

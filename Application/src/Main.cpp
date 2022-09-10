@@ -10,14 +10,20 @@ int main()
 	Pinewood::Window window;
 	Pinewood::HLContext context;
 	Pinewood::HLRenderInterface renderInterface;
-	Pinewood::HLBuffer vertexBuffer;
+	Pinewood::HLBuffer vertexBuffer, indexBuffer;
 	Pinewood::HLLayout vertexLayout;
 	Pinewood::HLVertexBinding vertexBinding;
 
-	PWMath::Vector2F32 vertices[3]{
-		{  0.0,  0.5 },
-		{ -0.5, -0.5 },
+	PWMath::Vector2F32 vertices[4]{
+		{  0.5,  0.5 },
 		{  0.5, -0.5 },
+		{ -0.5, -0.5 },
+		{ -0.5,  0.5 }
+	};
+
+	uint32_t indices[6]{
+		0, 1, 2,
+		2, 3, 0
 	};
 
 	Pinewood::HLLayoutElement layoutElements[]{
@@ -55,6 +61,13 @@ int main()
 		.data = vertices
 		});
 
+	indexBuffer.Create({
+	.context = context,
+	.usage = Pinewood::HLBufferUsage::Mutable,
+	.size = sizeof(indices),
+	.data = indices
+		});
+
 	vertexLayout.Create({
 		.context = context,
 		.elements = layoutElements,
@@ -64,6 +77,7 @@ int main()
 	vertexBinding.Create({
 		.context = context,
 		.vertexBuffers = std::span{ &vertexBuffer, 1 },
+		.indexBuffer = indexBuffer,
 		.vertexLayout = vertexLayout
 		});
 
@@ -75,6 +89,9 @@ int main()
 		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
 
 		// Render here
+		renderInterface.BindVertexBinding(vertexBinding);
+
+		renderInterface.DrawIndexed(6);
 	}
 
 	return 0;

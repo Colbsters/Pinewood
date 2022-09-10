@@ -3,6 +3,7 @@
 #include <Pinewood/Error.h>
 #include <Pinewood/EnumSupport.h>
 #include <Pinewood/Renderer/HLContext.h>
+#include <Pinewood/Renderer/HLVertexBinding.h>
 
 namespace Pinewood
 {
@@ -51,6 +52,15 @@ namespace Pinewood
 		
 		// Clears the render target
 		Result ClearTarget(ClearTargetFlags flags);
+
+		// Binds a vertex binding for rending
+		Result BindVertexBinding(const HLVertexBinding& vertexBinding);
+
+		// Draws using the vertex buffer
+		Result Draw(uint32_t startIndex, uint32_t count);
+
+		// Draws using the index buffer and the vertex buffer
+		Result DrawIndexed(uint32_t count);
 
 		HLContext GetContext();
 
