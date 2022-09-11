@@ -58,7 +58,10 @@ namespace Pinewood
 		Result BindVertexBinding(const HLVertexBinding& vertexBinding);
 
 		// Binds a vertex binding for rending
-		Result BindShaderProgram(const HLShaderProgram& vertexBinding);
+		Result BindShaderProgram(const HLShaderProgram& program);
+
+		// Sets a constant buffer
+		Result SetConstantBuffer(uint32_t index, const HLBuffer& buffer);
 
 		// Draws using the vertex buffer
 		Result Draw(uint32_t startIndex, uint32_t count);

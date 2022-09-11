@@ -68,8 +68,9 @@ namespace Pinewood
 	Result HLBuffer::Map(void*& ptrOut, HLBufferAccess access)
 	{
 		ptrOut = m_details->gl->MapNamedBuffer(m_details->buffer,
-			(static_cast<uint32_t>(access & HLBufferAccess::Read) ? GL_MAP_READ_BIT : 0) |
-			(static_cast<uint32_t>(access & HLBufferAccess::Write) ? GL_MAP_WRITE_BIT : 0));
+			(access == HLBufferAccess::Read ? GL_READ_ONLY :
+			(access == HLBufferAccess::Write ? GL_WRITE_ONLY :
+			(access == (HLBufferAccess::Read | HLBufferAccess::Write) ? GL_READ_WRITE : 0))));
 
 		return Result::Success;
 	}

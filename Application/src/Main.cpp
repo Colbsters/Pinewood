@@ -36,11 +36,16 @@ const char* vertexShaderSource = R"(
 layout(location = 0) in vec4 i_position;
 layout(location = 1) in vec4 i_color;
 
-layout(location = 0) out vec4 v_color;
+layout(std140, location = 0) uniform transform
+{
+	mat4 u_mvp;
+};
+
+out vec4 v_color;
 
 void main()
 {
-	gl_Position = i_position;
+	gl_Position = u_mvp * i_position;
 	v_color = i_color;
 }
 )";
@@ -48,9 +53,9 @@ void main()
 const char* pixelShaderSource = R"(
 #version 450
 
-layout(location = 0) in vec4 v_color;
-
 layout(location = 0) out vec4 o_color;
+
+in vec4 v_color;
 
 void main()
 {
@@ -65,7 +70,7 @@ int main()
 	Pinewood::Window window;
 	Pinewood::HLContext context;
 	Pinewood::HLRenderInterface renderInterface;
-	Pinewood::HLBuffer vertexBuffer, indexBuffer;
+	Pinewood::HLBuffer vertexBuffer, indexBuffer, uniformBuffer;
 	Pinewood::HLLayout vertexLayout;
 	Pinewood::HLVertexBinding vertexBinding;
 	Pinewood::HLShaderModule vertexShader, pixelShader;
@@ -99,10 +104,16 @@ int main()
 		});
 
 	indexBuffer.Create({
-	.context = context,
-	.usage = Pinewood::HLBufferUsage::Mutable,
-	.size = sizeof(indices),
-	.data = indices
+		.context = context,
+		.usage = Pinewood::HLBufferUsage::Mutable,
+		.size = sizeof(indices),
+		.data = indices
+		});
+
+	uniformBuffer.Create({
+		.context = context,
+		.usage = Pinewood::HLBufferUsage::Mutable,
+		.size = sizeof(PWMath::Matrix4x4F32)
 		});
 
 	vertexLayout.Create({
@@ -139,6 +150,7 @@ int main()
 			});
 	}
 
+	float x = 0.0f;
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
@@ -146,10 +158,21 @@ int main()
 
 		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
 
+		x += 0.005f;
+		if (x > 1.5) x = -1.5;
+		auto matrix = PWMath::Translate(PWMath::Matrix4x4F32{ 1 }, { x, x, 0 });
+
+		void* uniformMapping;
+		uniformBuffer.Map(uniformMapping, Pinewood::HLBufferAccess::Write);
+		std::memcpy(uniformMapping, &matrix, sizeof(matrix));
+		uniformBuffer.Unmap();
+
 		// Render here
 		renderInterface.BindShaderProgram(shaderProgram);
 
 		renderInterface.BindVertexBinding(vertexBinding);
+
+		renderInterface.SetConstantBuffer(0, uniformBuffer);
 
 		renderInterface.DrawIndexed(6);
 	}

@@ -10,6 +10,8 @@ namespace Pinewood
 		HLContext context;
 		GladGLContext* gl; // So I don't need to get it from the context all the time
 
+		HLShaderProgram program; // Used for uniforms
+
 		~Details();
 
 		Result Destroy();
@@ -80,12 +82,21 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	Result HLRenderInterface::BindShaderProgram(const HLShaderProgram& vertexBinding)
+	Result HLRenderInterface::BindShaderProgram(const HLShaderProgram& program)
 	{
-		// Get a copy that's not const
-		auto vb = vertexBinding;
+		m_details->program = program;
+		m_details->gl->UseProgram(m_details->program.GetNativeHandle());
 
-		m_details->gl->UseProgram(vb.GetNativeHandle());
+		return Result::Success;
+	}
+
+	Result HLRenderInterface::SetConstantBuffer(uint32_t index, const HLBuffer& buffer)
+	{
+		// non-const copy
+		HLBuffer buf = buffer;
+
+		m_details->gl->BindBufferBase(GL_UNIFORM_BUFFER, index, buf.GetNativeHandle());
+		m_details->gl->UniformBlockBinding(m_details->program.GetNativeHandle(), index, index);
 
 		return Result::Success;
 	}
