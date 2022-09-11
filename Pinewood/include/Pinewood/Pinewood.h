@@ -10,4 +10,6 @@
 #include <Pinewood/Renderer/HLBuffer.h>
 #include <Pinewood/Renderer/HLLayout.h>
 #include <Pinewood/Renderer/HLVertexBinding.h>
+#include <Pinewood/Renderer/HLShaderModule.h>
+#include <Pinewood/Renderer/HLShaderProgram.h>
 #endif // ^^^ PW_RENDERER_OPENGL4

@@ -3,6 +3,61 @@
 
 #include <thread>
 
+struct Vertex
+{
+	PWMath::Vector2F32 position;
+	PWMath::Vector3F32 color;
+};
+
+Vertex vertices[4]{
+	{ {  0.5,  0.5 }, { 1.0, 1.0, 0.0 } },
+	{ {  0.5, -0.5 }, { 0.0, 1.0, 0.0 } },
+	{ { -0.5, -0.5 }, { 0.0, 0.0, 1.0 } },
+	{ { -0.5,  0.5 }, { 1.0, 0.0, 0.0 } }
+};
+
+uint32_t indices[6]{
+	0, 1, 2,
+	2, 3, 0
+};
+
+Pinewood::HLLayoutElement layoutElements[]{
+	{ 0,						Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 },
+	{ offsetof(Vertex, color),	Pinewood::HLLayoutElementType::Vector3F32, /* index */ 1, /* binding */ 0, /* divisor (per-vertex) */ 0 }
+};
+
+Pinewood::HLLayoutBinding layoutBindings[]{
+	{ 0, sizeof(Vertex) }
+};
+
+const char* vertexShaderSource = R"(
+#version 450
+
+layout(location = 0) in vec4 i_position;
+layout(location = 1) in vec4 i_color;
+
+layout(location = 0) out vec4 v_color;
+
+void main()
+{
+	gl_Position = i_position;
+	v_color = i_color;
+}
+)";
+
+const char* pixelShaderSource = R"(
+#version 450
+
+layout(location = 0) in vec4 v_color;
+
+layout(location = 0) out vec4 o_color;
+
+void main()
+{
+	o_color = vec4(pow(v_color.rgb, vec3(1/2.2)), v_color.a); 
+}
+)";
+
 using namespace Pinewood::Operators;
 
 int main()
@@ -13,26 +68,8 @@ int main()
 	Pinewood::HLBuffer vertexBuffer, indexBuffer;
 	Pinewood::HLLayout vertexLayout;
 	Pinewood::HLVertexBinding vertexBinding;
-
-	PWMath::Vector2F32 vertices[4]{
-		{  0.5,  0.5 },
-		{  0.5, -0.5 },
-		{ -0.5, -0.5 },
-		{ -0.5,  0.5 }
-	};
-
-	uint32_t indices[6]{
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	Pinewood::HLLayoutElement layoutElements[]{
-		{ 0, Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 }
-	};
-
-	Pinewood::HLLayoutBinding layoutBindings[]{
-		{ 0, sizeof(PWMath::Vector2F32) }
-	};
+	Pinewood::HLShaderModule vertexShader, pixelShader;
+	Pinewood::HLShaderProgram shaderProgram;
 
 	window.Create({
 		.title = "Pinewood Application Window",
@@ -81,6 +118,27 @@ int main()
 		.vertexLayout = vertexLayout
 		});
 
+	vertexShader.Create({
+		.context = context,
+		.type = Pinewood::HLShaderModuleType::Vertex,
+		.shaderSource = vertexShaderSource
+		});
+
+	pixelShader.Create({
+		.context = context,
+		.type = Pinewood::HLShaderModuleType::Pixel,
+		.shaderSource = pixelShaderSource
+		});
+
+	{
+		Pinewood::HLShaderModule shaderModules[]{ vertexShader, pixelShader };
+
+		shaderProgram.Create({
+			.context = context,
+			.shaderModules = shaderModules
+			});
+	}
+
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
@@ -89,6 +147,8 @@ int main()
 		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
 
 		// Render here
+		renderInterface.BindShaderProgram(shaderProgram);
+
 		renderInterface.BindVertexBinding(vertexBinding);
 
 		renderInterface.DrawIndexed(6);

@@ -4,6 +4,7 @@
 #include <Pinewood/EnumSupport.h>
 #include <Pinewood/Renderer/HLContext.h>
 #include <Pinewood/Renderer/HLVertexBinding.h>
+#include <Pinewood/Renderer/HLShaderProgram.h>
 
 namespace Pinewood
 {
@@ -55,6 +56,9 @@ namespace Pinewood
 
 		// Binds a vertex binding for rending
 		Result BindVertexBinding(const HLVertexBinding& vertexBinding);
+
+		// Binds a vertex binding for rending
+		Result BindShaderProgram(const HLShaderProgram& vertexBinding);
 
 		// Draws using the vertex buffer
 		Result Draw(uint32_t startIndex, uint32_t count);

@@ -80,6 +80,16 @@ namespace Pinewood
 		return Result::Success;
 	}
 
+	Result HLRenderInterface::BindShaderProgram(const HLShaderProgram& vertexBinding)
+	{
+		// Get a copy that's not const
+		auto vb = vertexBinding;
+
+		m_details->gl->UseProgram(vb.GetNativeHandle());
+
+		return Result::Success;
+	}
+
 	Result HLRenderInterface::Draw(uint32_t startIndex, uint32_t count)
 	{
 		m_details->gl->DrawArrays(GL_TRIANGLES, startIndex, count);
