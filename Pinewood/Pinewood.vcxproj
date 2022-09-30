@@ -94,6 +94,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Pinewood\Renderer\HLTexture2D.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HLImageFormat.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLShaderProgram.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLShaderModule.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h" />
@@ -107,6 +109,7 @@
     <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Texture2D.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4ShaderProgram.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4ShaderModule.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4VertexBinding.h" />
@@ -117,6 +120,7 @@
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Pinewood\Renderer\HLTexture2D.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLShaderProgram.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLShaderModule.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLVertexBinding.cpp" />

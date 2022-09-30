@@ -6,14 +6,14 @@
 struct Vertex
 {
 	PWMath::Vector2F32 position;
-	PWMath::Vector3F32 color;
+	PWMath::Vector2F32 uv;
 };
 
 Vertex vertices[4]{
-	{ {  0.5,  0.5 }, { 1.0, 1.0, 0.0 } },
-	{ {  0.5, -0.5 }, { 0.0, 1.0, 0.0 } },
-	{ { -0.5, -0.5 }, { 0.0, 0.0, 1.0 } },
-	{ { -0.5,  0.5 }, { 1.0, 0.0, 0.0 } }
+	{ {  0.5,  0.5 }, {  2.0,  2.0 } },
+	{ {  0.5, -0.5 }, {  2.0, -1.0 } },
+	{ { -0.5, -0.5 }, { -1.0, -1.0 } },
+	{ { -0.5,  0.5 }, { -1.0,  2.0 } }
 };
 
 uint32_t indices[6]{
@@ -22,8 +22,8 @@ uint32_t indices[6]{
 };
 
 Pinewood::HLLayoutElement layoutElements[]{
-	{ 0,						Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 },
-	{ offsetof(Vertex, color),	Pinewood::HLLayoutElementType::Vector3F32, /* index */ 1, /* binding */ 0, /* divisor (per-vertex) */ 0 }
+	{ 0,					Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 },
+	{ offsetof(Vertex, uv),	Pinewood::HLLayoutElementType::Vector3F32, /* index */ 1, /* binding */ 0, /* divisor (per-vertex) */ 0 }
 };
 
 Pinewood::HLLayoutBinding layoutBindings[]{
@@ -55,13 +55,27 @@ const char* pixelShaderSource = R"(
 
 layout(location = 0) out vec4 o_color;
 
+layout(location = 1) uniform sampler2D i_sampler;
+
 in vec4 v_color;
 
 void main()
 {
-	o_color = vec4(pow(v_color.rgb, vec3(1/2.2)), v_color.a); 
+	o_color = texture(i_sampler, v_color.rg);//vec4(pow(v_color.rgb, vec3(1/2.2)), v_color.a); 
 }
 )";
+
+constexpr uint8_t textureData[] = {
+	0xff, 0x00, 0x00,
+	0xff, 0xff, 0x00,
+	0x00, 0xff, 0x00,
+	0x00, 0x00, 0x00,
+
+	0x00, 0xff, 0xff,
+	0x00, 0x00, 0xff,
+	0xff, 0x00, 0xff,
+	0xff, 0xff, 0xff,
+};
 
 using namespace Pinewood::Operators;
 
@@ -75,6 +89,7 @@ int main()
 	Pinewood::HLVertexBinding vertexBinding;
 	Pinewood::HLShaderModule vertexShader, pixelShader;
 	Pinewood::HLShaderProgram shaderProgram;
+	Pinewood::HLTexture2D texture;
 
 	window.Create({
 		.title = "Pinewood Application Window",
@@ -150,6 +165,16 @@ int main()
 			});
 	}
 
+
+	texture.Create({
+		.context = context,
+		.width = 4,
+		.height = 2,
+		.sampleFilter = Pinewood::HLTextureFilter::Nearest,
+		.format = Pinewood::HLImageFormat::R8G8B8_UNorm,
+		.data = (void*)textureData
+		});
+
 	float x = 0.0f;
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
@@ -173,6 +198,8 @@ int main()
 		renderInterface.BindVertexBinding(vertexBinding);
 
 		renderInterface.SetConstantBuffer(0, uniformBuffer);
+
+		renderInterface.SetTexture2D(1, 0, texture);
 
 		renderInterface.DrawIndexed(6);
 	}

@@ -12,4 +12,5 @@
 #include <Pinewood/Renderer/HLVertexBinding.h>
 #include <Pinewood/Renderer/HLShaderModule.h>
 #include <Pinewood/Renderer/HLShaderProgram.h>
+#include <Pinewood/Renderer/HLTexture2D.h>
 #endif // ^^^ PW_RENDERER_OPENGL4

@@ -101,6 +101,16 @@ namespace Pinewood
 		return Result::Success;
 	}
 
+	Result HLRenderInterface::SetTexture2D(uint32_t location, uint32_t slot, const HLTexture2D& texture)
+	{
+		HLTexture2D tex = texture;
+
+		m_details->gl->BindTextureUnit(slot, tex.GetNativeHandle());
+		m_details->gl->Uniform1i(location, slot);
+
+		return Result::Success;
+	}
+
 	Result HLRenderInterface::Draw(uint32_t startIndex, uint32_t count)
 	{
 		m_details->gl->DrawArrays(GL_TRIANGLES, startIndex, count);

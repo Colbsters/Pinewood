@@ -5,6 +5,7 @@
 #include <Pinewood/Renderer/HLContext.h>
 #include <Pinewood/Renderer/HLVertexBinding.h>
 #include <Pinewood/Renderer/HLShaderProgram.h>
+#include <Pinewood/Renderer/HLTexture2D.h>
 
 namespace Pinewood
 {
@@ -62,6 +63,9 @@ namespace Pinewood
 
 		// Sets a constant buffer
 		Result SetConstantBuffer(uint32_t index, const HLBuffer& buffer);
+
+		// Sets a texture
+		Result SetTexture2D(uint32_t location, uint32_t slot, const HLTexture2D& texture);
 
 		// Draws using the vertex buffer
 		Result Draw(uint32_t startIndex, uint32_t count);
