@@ -49,7 +49,10 @@ namespace Pinewood
 		//  - Each thread can has a separate current context
 		//  - The context must be current before any HLContext call (except Destroy)
 		//  - The context must be current before any HLRenderInterface
+		//  - The context can only be current on 1 thread at a time
 		Result MakeCurrent();
+
+		Result MakeObsolete();
 
 		// Gets the native handle and information
 		NativeHandle GetNativeHandle();

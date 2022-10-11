@@ -243,7 +243,7 @@ namespace Pinewood
 	Result HLTexture2D::GetImage(void* data, size_t bufferSize, uint32_t mipLevel, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height)
 	{
 		auto glFormat = GetGLFormat2(m_details->format);
-		m_details->gl->GetTextureSubImage(m_details->texture, mipLevel, xOffset, yOffset, 0, width, height, 0, glFormat.baseFormat, glFormat.sizeFormat, bufferSize, data);
+		m_details->gl->GetTextureSubImage(m_details->texture, mipLevel, xOffset, yOffset, 0, width, height, 0, glFormat.baseFormat, glFormat.sizeFormat, static_cast<GLsizei>(bufferSize), data);
 
 		return Result::Success;
 	}

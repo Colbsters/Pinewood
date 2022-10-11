@@ -226,6 +226,11 @@ namespace Pinewood
 		return Result::Success;
 	}
 
+	Result HLContext::MakeObsolete()
+	{
+		return m_details->MakeObsolete();
+	}
+
 	Result HLContext::MakeCurrent()
 	{
 		// The context is already current, don't need to do anything

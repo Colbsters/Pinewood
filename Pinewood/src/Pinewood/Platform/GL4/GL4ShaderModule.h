@@ -57,7 +57,7 @@ namespace Pinewood
 			// Create some temporary variables so I can pass pointers to glShaderSource
 			std::string shaderSource{ createInfo.shaderSource };
 			const char* shaderSourceCStr = shaderSource.c_str();
-			int shaderSourceLength = createInfo.shaderSource.size();
+			int shaderSourceLength = static_cast<int>(createInfo.shaderSource.size());
 
 			m_details->gl->ShaderSource(m_details->shader, 1, &shaderSourceCStr, &shaderSourceLength);
 		}

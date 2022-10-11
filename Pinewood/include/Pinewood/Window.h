@@ -2,11 +2,15 @@
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
 #include <Pinewood/EnumSupport.h>
+#include <Pinewood/Input.h>
 
-#include <atomic>
+#include <bitset>
 
 namespace Pinewood
 {
+	// Forward declaration
+	class Window;
+
 	enum class WindowCreateFlags : uint32_t
 	{
 		// Window Styles
@@ -51,6 +55,93 @@ namespace Pinewood
 		WindowCreateFlags flags = WindowCreateFlags::DefaultStyle;	// Create flags and style
 	};
 
+	enum class WindowEventCode
+	{
+		Null,
+		KeyDown,
+		KeyUp,
+		KeyChar,
+		MouseButtonDown,
+		MouseButtonUp,
+		MouseScroll,
+		MouseMove,
+		WindowResize,		// Only when the window finishes resizing
+		WindowResizing,		// Use WindowResize if you can, this one updates a lot during resize
+		WindowMove,			// Only when the window finishes moving
+		WindowMoving,		// Use WindowMove if you can, this one updates a lot when the window is moved
+		WindowDestroy,
+		// WindowCreate is not present because a window does not have event handlers on creation, hense it would be useless
+	};
+
+	// Base for window events
+	struct WindowEvent {};
+
+	// KeyDown and KeyUp
+	struct WindowKeyEvent : WindowEvent
+	{
+		KeyCode key;
+	};
+
+	// KeyChar
+	struct WindowKeyCharEvent : WindowEvent
+	{
+		char character;
+	};
+	
+	// MouseButtonDown, MouseButtonUp, and MouseMove
+	struct WindowMouseEvent : WindowEvent
+	{
+		// Relative to top-left corner
+		uint16_t x, y;
+		MouseButton buttons;
+	};
+
+	// MouseScroll
+	struct WindowMouseScrollEvent : WindowEvent
+	{
+		// Relative to top-left corner
+		uint16_t x, y;
+		MouseButton buttons;
+		float scroll;
+	};
+
+	// WindowResize and WindowResizing
+	struct WindowResizeEvent : WindowEvent
+	{
+		uint16_t width, height;
+		WindowShowMode showMode;
+	};
+
+	// WindowMove and WindowMoving
+	struct WindowMoveEvent : WindowEvent
+	{
+		int16_t x, y;
+	};
+
+	struct WindowEventHandler
+	{
+		using Function = void(*)(const Window& window, const WindowEvent& event, void* userPointer);
+		Function function;
+		void* userPointer;
+		WindowEventCode event;
+	};
+
+	template<typename TClass, void(TClass::* Function)(const Window&, const WindowEvent&)>
+	WindowEventHandler WrapWindowEventHandler(TClass* object, WindowEventCode event)
+	{
+		static auto wrapperFunc = [](const Window& window, const WindowEvent& event, void* userPointer)
+		{
+			auto e = static_cast<const WindowKeyEvent&>(event);
+			(static_cast<TClass*>(userPointer)->*Function)(window, event);
+		};
+
+		return WindowEventHandler{
+			.function = wrapperFunc,
+			.userPointer = static_cast<void*>(object),
+			.event = event
+		};
+	}
+
 	class Window
 	{
 	public:
@@ -75,6 +166,12 @@ namespace Pinewood
 		NativeHandle GetNativeHandle();
 
 		bool IsInitialized();
+
+		// If the eventHandler is already present, it will not be added and Result::InvalidParameter will be returned
+		Result AddEventHandler(const WindowEventHandler& eventHandler);
+
+		// If the eventHandler is not present, Result::InvalidParameter will be returned
+		Result RemoveEventHandler(const WindowEventHandler& eventHandler);
 
 	private:
 		class Details;

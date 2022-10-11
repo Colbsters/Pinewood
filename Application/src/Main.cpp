@@ -2,6 +2,9 @@
 #include <PWMath/PWMath.h>
 
 #include <thread>
+#include <mutex>
+
+using namespace Pinewood::Operators;
 
 struct Vertex
 {
@@ -77,20 +80,29 @@ constexpr uint8_t textureData[] = {
 	0xff, 0xff, 0xff,
 };
 
-using namespace Pinewood::Operators;
+std::mutex contextMutex;
+Pinewood::Window window;
+Pinewood::HLContext context;
+Pinewood::HLRenderInterface renderInterface;
+Pinewood::HLBuffer vertexBuffer, indexBuffer, uniformBuffer;
+Pinewood::HLLayout vertexLayout;
+Pinewood::HLVertexBinding vertexBinding;
+Pinewood::HLShaderModule vertexShader, pixelShader;
+Pinewood::HLShaderProgram shaderProgram;
+Pinewood::HLTexture2D texture;
+
+void WindowResizeHandler(const Pinewood::Window&, const Pinewood::WindowEvent& e, void*)
+{
+	auto& event = static_cast<const Pinewood::WindowResizeEvent&>(e);
+	std::lock_guard<std::mutex> lock{ contextMutex };
+
+	context.MakeCurrent();
+	context.ResizeSwapChain(event.width, event.height);
+	context.MakeObsolete();
+}
 
 int main()
 {
-	Pinewood::Window window;
-	Pinewood::HLContext context;
-	Pinewood::HLRenderInterface renderInterface;
-	Pinewood::HLBuffer vertexBuffer, indexBuffer, uniformBuffer;
-	Pinewood::HLLayout vertexLayout;
-	Pinewood::HLVertexBinding vertexBinding;
-	Pinewood::HLShaderModule vertexShader, pixelShader;
-	Pinewood::HLShaderProgram shaderProgram;
-	Pinewood::HLTexture2D texture;
-
 	window.Create({
 		.title = "Pinewood Application Window",
 		.x = 100,
@@ -98,6 +110,11 @@ int main()
 		.width = 1280,
 		.height = 720,
 		.flags = Pinewood::WindowCreateFlags::DefaultStyle | Pinewood::WindowCreateFlags::Show | Pinewood::WindowCreateFlags::Async
+		});
+
+	window.AddEventHandler({
+		.function = WindowResizeHandler,
+		.event = Pinewood::WindowEventCode::WindowResize
 		});
 
 	context.Create({
@@ -179,6 +196,10 @@ int main()
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
+		std::lock_guard<std::mutex> lock{ contextMutex };
+
+		context.MakeCurrent();
+
 		context.SwapBuffers();
 
 		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
@@ -202,6 +223,8 @@ int main()
 		renderInterface.SetTexture2D(1, 0, texture);
 
 		renderInterface.DrawIndexed(6);
+
+		context.MakeObsolete();
 	}
 
 	return 0;
