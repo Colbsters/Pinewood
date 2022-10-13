@@ -1,4 +1,4 @@
-#include <Pinewood/Pinewood.h>
+﻿#include <Pinewood/Pinewood.h>
 #include <PWMath/PWMath.h>
 
 #include <thread>
@@ -68,6 +68,36 @@ void main()
 }
 )";
 
+const char* postVertexSource = R"(
+#version 450
+
+layout(location = 0) in vec4 i_position;
+out vec2 v_uv;
+
+void main()
+{
+	gl_Position = i_position;
+	v_uv = 0.5 * (i_position.xy + 1.0);
+}
+)";
+
+const char* postPixelSource = R"(
+#version 450
+
+layout(location = 0) out vec4 o_color;
+
+layout(location = 1) uniform sampler2D i_color;
+
+in vec2 v_uv;
+
+void main()
+{
+	vec3 color = texture(i_color, v_uv).rgb;
+	color = 1.0 - color;
+	o_color = vec4(color, 1.0);
+}
+)";
+
 constexpr uint8_t textureData[] = {
 	0xff, 0x00, 0x00,
 	0xff, 0xff, 0x00,
@@ -91,6 +121,15 @@ Pinewood::HLShaderModule vertexShader, pixelShader;
 Pinewood::HLShaderProgram shaderProgram;
 Pinewood::HLTexture2D texture;
 
+
+Pinewood::HLBuffer screenVertexBuffer;
+Pinewood::HLLayout screenVertexLayout;
+Pinewood::HLVertexBinding screenVertexBinding;
+Pinewood::HLShaderModule postVertex, postPixel;
+Pinewood::HLShaderProgram postProgram;
+Pinewood::HLTexture2D colorAttachment;
+Pinewood::HLFramebuffer framebuffer;
+
 void WindowResizeHandler(const Pinewood::Window&, const Pinewood::WindowEvent& e, void*)
 {
 	auto& event = static_cast<const Pinewood::WindowResizeEvent&>(e);
@@ -98,6 +137,27 @@ void WindowResizeHandler(const Pinewood::Window&, const Pinewood::WindowEvent& e
 
 	context.MakeCurrent();
 	context.ResizeSwapChain(event.width, event.height);
+
+	// Recreate framebuffer
+	colorAttachment.Create({
+		.context = context,
+		.width = event.width,
+		.height = event.height,
+		.sampleFilter = Pinewood::HLTextureFilter::Nearest,
+		.format = Pinewood::HLImageFormat::R8G8B8_UNorm,
+		.data = nullptr
+		});
+
+	{
+		Pinewood::HLTexture2D textures[]{ colorAttachment };
+		Pinewood::HLFramebufferAttachment attachments[]{ Pinewood::HLFramebufferAttachment::Color0 };
+		framebuffer.Create({
+			.context = context,
+			.textures = std::span{ textures },
+			.attachments = std::span{ attachments }
+			});
+	}
+
 	context.MakeObsolete();
 }
 
@@ -182,6 +242,26 @@ int main()
 			});
 	}
 
+	postVertex.Create({
+		.context = context,
+		.type = Pinewood::HLShaderModuleType::Vertex,
+		.shaderSource = postVertexSource
+		});
+
+	postPixel.Create({
+		.context = context,
+		.type = Pinewood::HLShaderModuleType::Pixel,
+		.shaderSource = postPixelSource
+		});
+
+	{
+		Pinewood::HLShaderModule shaderModules[]{ postVertex, postPixel };
+
+		postProgram.Create({
+			.context = context,
+			.shaderModules = shaderModules
+			});
+	}
 
 	texture.Create({
 		.context = context,
@@ -191,6 +271,63 @@ int main()
 		.format = Pinewood::HLImageFormat::R8G8B8_UNorm,
 		.data = (void*)textureData
 		});
+	
+
+	{
+		PWMath::Vector2F32 screenVertices[] = {
+			PWMath::Vector2F32{-1.0f, 3.0f },
+			PWMath::Vector2F32{ 3.0f,-1.0f },
+			PWMath::Vector2F32{-1.0f,-1.0f }
+		};
+
+		Pinewood::HLLayoutElement screenLayoutElements[]{
+			{ 0,	Pinewood::HLLayoutElementType::Vector2F32, /* index */ 0, /* binding */ 0, /* divisor (per-vertex) */ 0 },
+		};
+
+		Pinewood::HLLayoutBinding screenLayoutBindings[]{
+			{ 0, sizeof(PWMath::Vector2F32) }
+		};
+
+		screenVertexBuffer.Create({
+			.context = context,
+			.usage = Pinewood::HLBufferUsage::Immutable,
+			.size = sizeof(screenVertices),
+			.data = screenVertices
+			});
+
+		screenVertexLayout.Create({
+			.context = context,
+			.elements = screenLayoutElements,
+			.bindings = screenLayoutBindings
+			});
+
+		Pinewood::HLBuffer screenVertexBuffers[]{ screenVertexBuffer };
+		screenVertexBinding.Create({
+			.context = context,
+			.vertexBuffers = screenVertexBuffers,
+			.vertexLayout = screenVertexLayout
+			});
+	}
+
+	// Create framebuffer
+	colorAttachment.Create({
+		.context = context,
+		.width = 1280,
+		.height = 720,
+		.sampleFilter = Pinewood::HLTextureFilter::Nearest,
+		.format = Pinewood::HLImageFormat::R8G8B8_UNorm,
+		.data = nullptr
+		});
+
+	{
+		Pinewood::HLTexture2D textures[]{ colorAttachment };
+		Pinewood::HLFramebufferAttachment attachments[]{ Pinewood::HLFramebufferAttachment::Color0 };
+		framebuffer.Create({
+			.context = context,
+			.textures = std::span{ textures },
+			.attachments = std::span{ attachments }
+			});
+	}
 
 	float x = 0.0f;
 	// No need to call update, it's done automatically on a separate thread
@@ -202,7 +339,7 @@ int main()
 
 		context.SwapBuffers();
 
-		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
+
 
 		x += 0.005f;
 		if (x > 1.5) x = -1.5;
@@ -214,6 +351,10 @@ int main()
 		uniformBuffer.Unmap();
 
 		// Render here
+		renderInterface.SetFramebuffer(framebuffer);
+
+		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
+
 		renderInterface.BindShaderProgram(shaderProgram);
 
 		renderInterface.BindVertexBinding(vertexBinding);
@@ -223,6 +364,21 @@ int main()
 		renderInterface.SetTexture2D(1, 0, texture);
 
 		renderInterface.DrawIndexed(6);
+
+
+
+		renderInterface.ResetFramebuffer();
+		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color);
+
+		renderInterface.ClearTarget(Pinewood::ClearTargetFlags::Color | Pinewood::ClearTargetFlags::Depth | Pinewood::ClearTargetFlags::Stencil);
+
+		renderInterface.BindShaderProgram(postProgram);
+
+		renderInterface.BindVertexBinding(screenVertexBinding);
+
+		renderInterface.SetTexture2D(1, 0, colorAttachment);
+
+		renderInterface.Draw(0, 3);
 
 		context.MakeObsolete();
 	}

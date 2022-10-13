@@ -65,5 +65,8 @@ namespace Pinewood
 		R10G10B10A2_UNORM,
 		R10G10B10A2_UInt,
 		R11G11B10_Float,
+
+		// Depth + stencil formats
+		D24S8_UInt
 	};
 }

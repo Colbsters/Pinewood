@@ -125,6 +125,18 @@ namespace Pinewood
 		return Result::Success;
 	}
 
+	Result HLRenderInterface::SetFramebuffer(const HLFramebuffer& framebuffer)
+	{
+		m_details->gl->BindFramebuffer(GL_FRAMEBUFFER, HLFramebuffer{ framebuffer }.GetNativeHandle());
+		return Result::Success;
+	}
+
+	Result HLRenderInterface::ResetFramebuffer()
+	{
+		m_details->gl->BindFramebuffer(GL_FRAMEBUFFER, 0);
+		return Result::Success;
+	}
+
 	HLContext HLRenderInterface::GetContext()
 	{
 		return m_details->context;

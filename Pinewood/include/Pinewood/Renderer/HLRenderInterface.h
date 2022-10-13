@@ -6,6 +6,7 @@
 #include <Pinewood/Renderer/HLVertexBinding.h>
 #include <Pinewood/Renderer/HLShaderProgram.h>
 #include <Pinewood/Renderer/HLTexture2D.h>
+#include <Pinewood/Renderer/HLFramebuffer.h>
 
 namespace Pinewood
 {
@@ -72,6 +73,13 @@ namespace Pinewood
 
 		// Draws using the index buffer and the vertex buffer
 		Result DrawIndexed(uint32_t count);
+
+		// Sets the framebuffer
+		Result SetFramebuffer(const HLFramebuffer& framebuffer);
+
+		// Use default framebuffer
+		Result ResetFramebuffer();
+
 
 		HLContext GetContext();
 

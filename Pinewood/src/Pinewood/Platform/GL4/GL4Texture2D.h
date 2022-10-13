@@ -62,6 +62,7 @@ namespace Pinewood
 			{ GL_RGBA,	GL_RGB10_A2			}, // R10G10B10A2_UNORM
 			{ GL_RGBA,	GL_RGB10_A2UI		}, // R10G10B10A2_UInt
 			{ GL_RGB,	GL_R11F_G11F_B10F	}, // R11G11B10_Float
+			{ GL_DEPTH_STENCIL,	GL_DEPTH24_STENCIL8 } // D24S8_UInt
 		};
 
 		// Use the look-up table, and don't forget to do bounds checking
@@ -125,6 +126,7 @@ namespace Pinewood
 			{ GL_RGBA,	GL_FLOAT			}, // R10G10B10A2_UNORM
 			{ GL_RGBA,	GL_FLOAT			}, // R10G10B10A2_UInt
 			{ GL_RGB,	GL_FLOAT			}, // R11G11B10_Float
+			{ GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8 } // D24S8_UInt
 		};
 
 		// Use the look-up table, and don't forget to do bounds checking

@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Pinewood\Renderer\HLFramebuffer.h" />
     <ClInclude Include="include\Pinewood\Input.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLTexture2D.h" />
     <ClInclude Include="include\Pinewood\Renderer\HLImageFormat.h" />
@@ -117,6 +118,7 @@
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Layout.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4RenderInterface.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Buffer.h" />
+    <ClInclude Include="src\Pinewood\Platform\GL4\GL4Framebuffer.h" />
     <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h" />
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h" />
   </ItemGroup>
@@ -129,6 +131,7 @@
     <ClCompile Include="src\Pinewood\Renderer\HLRenderInterface.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLContext.cpp" />
     <ClCompile Include="src\Pinewood\Renderer\HLBuffer.cpp" />
+    <ClCompile Include="src\Pinewood\Renderer\HLFramebuffer.cpp" />
     <ClCompile Include="src\Pinewood\Window\Window.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

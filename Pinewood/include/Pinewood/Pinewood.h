@@ -13,4 +13,5 @@
 #include <Pinewood/Renderer/HLShaderModule.h>
 #include <Pinewood/Renderer/HLShaderProgram.h>
 #include <Pinewood/Renderer/HLTexture2D.h>
+#include <Pinewood/Renderer/HLFramebuffer.h>
 #endif // ^^^ PW_RENDERER_OPENGL4
