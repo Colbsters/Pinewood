@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include <Pinewood/Renderer/HLShaderProgram.h>
+#include <Pinewood/Renderer/HL/HLShaderProgram.h>
 
 namespace Pinewood
 {

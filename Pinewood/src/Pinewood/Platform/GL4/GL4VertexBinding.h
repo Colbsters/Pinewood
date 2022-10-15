@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include <Pinewood/Renderer/HLVertexBinding.h>
+#include <Pinewood/Renderer/HL/HLVertexBinding.h>
 
 namespace Pinewood
 {

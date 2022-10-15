@@ -1,8 +1,8 @@
 #pragma once
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
-#include <Pinewood/Renderer/HLContext.h>
-#include <Pinewood/Renderer/HLTexture2D.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
+#include <Pinewood/Renderer/HL/HLTexture2D.h>
 
 namespace Pinewood
 {

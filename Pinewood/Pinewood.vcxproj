@@ -94,21 +94,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\Pinewood\Renderer\HLFramebuffer.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLFramebuffer.h" />
     <ClInclude Include="include\Pinewood\Input.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLTexture2D.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLImageFormat.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLShaderProgram.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLShaderModule.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLLayout.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLVertexBinding.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLTexture2D.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLImageFormat.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLShaderProgram.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLShaderModule.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLBuffer.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLLayout.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLVertexBinding.h" />
     <ClInclude Include="include\Pinewood\Core.h" />
     <ClInclude Include="include\Pinewood\EnumSupport.h" />
     <ClInclude Include="include\Pinewood\Error.h" />
     <ClInclude Include="include\Pinewood\Pinewood.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLContext.h" />
-    <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLContext.h" />
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLRenderInterface.h" />
     <ClInclude Include="include\Pinewood\Window.h" />
     <ClInclude Include="src\pch.h" />
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Texture2D.h" />

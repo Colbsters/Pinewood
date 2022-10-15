@@ -1,8 +1,8 @@
 #pragma once
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
-#include <Pinewood/Renderer/HLContext.h>
-#include <Pinewood/Renderer/HLImageFormat.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
+#include <Pinewood/Renderer/HL/HLImageFormat.h>
 
 namespace Pinewood
 {

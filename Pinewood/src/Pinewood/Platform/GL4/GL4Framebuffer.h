@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include <Pinewood/Renderer/HLFramebuffer.h>
+#include <Pinewood/Renderer/HL/HLFramebuffer.h>
 
 namespace Pinewood
 {

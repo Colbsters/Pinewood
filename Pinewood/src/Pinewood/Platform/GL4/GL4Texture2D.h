@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include <Pinewood/Renderer/HLTexture2D.h>
+#include <Pinewood/Renderer/HL/HLTexture2D.h>
 
 namespace Pinewood
 {

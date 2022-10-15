@@ -1,9 +1,9 @@
 #pragma once
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
-#include <Pinewood/Renderer/HLContext.h>
-#include <Pinewood/Renderer/HLBuffer.h>
-#include <Pinewood/Renderer/HLLayout.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
+#include <Pinewood/Renderer/HL/HLBuffer.h>
+#include <Pinewood/Renderer/HL/HLLayout.h>
 
 namespace Pinewood
 {

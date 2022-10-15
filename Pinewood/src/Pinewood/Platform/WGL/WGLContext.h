@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include <Pinewood/Renderer/HLContext.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
 
 // Used for creating a dummy context
 #include <Pinewood/Window.h>

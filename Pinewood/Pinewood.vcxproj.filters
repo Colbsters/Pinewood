@@ -36,13 +36,13 @@
     <ClInclude Include="src\Pinewood\Platform\Win32\Win32Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLContext.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\WGL\WGLContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLRenderInterface.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLRenderInterface.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4RenderInterface.h">
@@ -51,13 +51,13 @@
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Buffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLVertexBinding.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLVertexBinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLLayout.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLLayout.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLBuffer.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Layout.h">
@@ -66,22 +66,22 @@
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4VertexBinding.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLShaderModule.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLShaderModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4ShaderModule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLShaderProgram.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4ShaderProgram.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLImageFormat.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLImageFormat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLTexture2D.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLTexture2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Texture2D.h">
@@ -90,7 +90,7 @@
     <ClInclude Include="include\Pinewood\Input.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\Pinewood\Renderer\HLFramebuffer.h">
+    <ClInclude Include="include\Pinewood\Renderer\HL\HLFramebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Framebuffer.h">

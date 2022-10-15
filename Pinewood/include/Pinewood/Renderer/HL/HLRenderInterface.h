@@ -2,11 +2,11 @@
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
 #include <Pinewood/EnumSupport.h>
-#include <Pinewood/Renderer/HLContext.h>
-#include <Pinewood/Renderer/HLVertexBinding.h>
-#include <Pinewood/Renderer/HLShaderProgram.h>
-#include <Pinewood/Renderer/HLTexture2D.h>
-#include <Pinewood/Renderer/HLFramebuffer.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
+#include <Pinewood/Renderer/HL/HLVertexBinding.h>
+#include <Pinewood/Renderer/HL/HLShaderProgram.h>
+#include <Pinewood/Renderer/HL/HLTexture2D.h>
+#include <Pinewood/Renderer/HL/HLFramebuffer.h>
 
 namespace Pinewood
 {

@@ -1,7 +1,7 @@
 #pragma once
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
-#include <Pinewood/Renderer/HLContext.h>
+#include <Pinewood/Renderer/HL/HLContext.h>
 
 namespace Pinewood
 {
