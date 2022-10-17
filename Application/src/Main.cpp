@@ -121,7 +121,6 @@ Pinewood::HLShaderModule vertexShader, pixelShader;
 Pinewood::HLShaderProgram shaderProgram;
 Pinewood::HLTexture2D texture;
 
-
 Pinewood::HLBuffer screenVertexBuffer;
 Pinewood::HLLayout screenVertexLayout;
 Pinewood::HLVertexBinding screenVertexBinding;
@@ -129,6 +128,9 @@ Pinewood::HLShaderModule postVertex, postPixel;
 Pinewood::HLShaderProgram postProgram;
 Pinewood::HLTexture2D colorAttachment;
 Pinewood::HLFramebuffer framebuffer;
+
+Pinewood::KeyboardInput keyboard;
+Pinewood::MouseInput mouse;
 
 void WindowResizeHandler(const Pinewood::Window&, const Pinewood::WindowEvent& e, void*)
 {
@@ -176,6 +178,9 @@ int main()
 		.function = WindowResizeHandler,
 		.event = Pinewood::WindowEventCode::WindowResize
 		});
+
+	keyboard.Create(window);
+	mouse.Create(window);
 
 	context.Create({
 		.window = window,
@@ -329,21 +334,25 @@ int main()
 			});
 	}
 
-	float x = 0.0f;
+	PWMath::Vector3F32 position{ 0.0f };
+	uint32_t qwerty = 0;
 	// No need to call update, it's done automatically on a separate thread
 	while (window.IsRunning())
 	{
+		qwerty++;
+		if (keyboard.IsKeyPressed(Pinewood::KeyCode::W)) position.y += 0.05f;
+		if (keyboard.IsKeyPressed(Pinewood::KeyCode::S)) position.y -= 0.05f;
+		if (keyboard.IsKeyPressed(Pinewood::KeyCode::A)) position.x -= 0.05f;
+		if (keyboard.IsKeyPressed(Pinewood::KeyCode::D)) position.x += 0.05f;
+
 		std::lock_guard<std::mutex> lock{ contextMutex };
 
 		context.MakeCurrent();
 
 		context.SwapBuffers();
 
-
-
-		x += 0.005f;
-		if (x > 1.5) x = -1.5;
-		auto matrix = PWMath::Translate(PWMath::Matrix4x4F32{ 1 }, { x, x, 0 });
+		auto matrix = PWMath::Translate(PWMath::Matrix4x4F32{ 1 }, position);
+		matrix = PWMath::Scale(matrix, PWMath::Vector3F32{ std::expf(mouse.GetScrollDelta()) });
 
 		void* uniformMapping;
 		uniformBuffer.Map(uniformMapping, Pinewood::HLBufferAccess::Write);

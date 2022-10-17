@@ -94,6 +94,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="include\Pinewood\InputX.h" />
     <ClInclude Include="include\Pinewood\Renderer\HL\HLFramebuffer.h" />
     <ClInclude Include="include\Pinewood\Input.h" />
     <ClInclude Include="include\Pinewood\Renderer\HL\HLTexture2D.h" />

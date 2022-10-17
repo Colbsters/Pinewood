@@ -96,6 +96,9 @@
     <ClInclude Include="src\Pinewood\Platform\GL4\GL4Framebuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\Pinewood\InputX.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">

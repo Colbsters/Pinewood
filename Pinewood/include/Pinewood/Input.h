@@ -178,6 +178,9 @@ namespace Pinewood
 		XButton2		= 0x10,
 		Control			= 0x20,
 		Shift			= 0x40,
+
+		AllButtons		= 0x1f,
+		AllKeys			= 0x60,
 	};
 
 	namespace Operators

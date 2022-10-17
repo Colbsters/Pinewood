@@ -3,6 +3,8 @@
 #include <Pinewood/Core.h>
 #include <Pinewood/Error.h>
 #include <Pinewood/Window.h>
+#include <Pinewood/Input.h>
+#include <Pinewood/InputX.h>
 
 #if PW_RENDERER_OPENGL4
 #include <Pinewood/Renderer/HL/HLContext.h>
