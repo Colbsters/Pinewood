@@ -2,11 +2,11 @@
 #include "pch.h"
 #include "TextureCommon.h"
 
-#include <Pinewood/Renderer/HL/HLTexture2D.h>
+#include <Pinewood/Renderer/HL/HLTexture2DArray.h>
 
 namespace Pinewood
 {
-	class HLTexture2D::Details
+	class HLTexture2DArray::Details
 	{
 	public:
 		HLContext context;
@@ -20,12 +20,12 @@ namespace Pinewood
 		Result Destroy();
 	};
 
-	HLTexture2D::Details::~Details()
+	HLTexture2DArray::Details::~Details()
 	{
 		Destroy();
 	}
 	
-	Result HLTexture2D::Details::Destroy()
+	Result HLTexture2DArray::Details::Destroy()
 	{
 		gl->DeleteTextures(1, &texture);
 
@@ -35,7 +35,7 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	Result HLTexture2D::Create(const HLTexture2DCreateInfo& createInfo)
+	Result HLTexture2DArray::Create(const HLTexture2DArrayCreateInfo& createInfo)
 	{
 		m_details = std::make_shared<Details>();
 		m_details->context = createInfo.context;
@@ -43,7 +43,7 @@ namespace Pinewood
 		m_details->format = createInfo.format;
 		auto glFormat = Impl::GetGLFormat(createInfo.format);
 
-		m_details->gl->CreateTextures(GL_TEXTURE_2D, 1, &m_details->texture);
+		m_details->gl->CreateTextures(GL_TEXTURE_2D_ARRAY, 1, &m_details->texture);
 
 		// Set the wrap mode
 		switch (createInfo.wrapMode)
@@ -94,7 +94,7 @@ namespace Pinewood
 		// Note: 'std::bit_width(x)' is similar to 'std::floor(std::log2(x))', but for integers
 		uint32_t mipLevels = (createInfo.mipLevels == 0) ? std::bit_width(std::max(createInfo.width, createInfo.height)) : createInfo.mipLevels;
 		
-		m_details->gl->TextureStorage2D(m_details->texture, mipLevels, glFormat.sizeFormat, createInfo.width, createInfo.height);
+		m_details->gl->TextureStorage3D(m_details->texture, mipLevels, glFormat.sizeFormat, createInfo.width, createInfo.height, createInfo.count);
 
 		if (createInfo.data)
 			SetImage(createInfo.data, 0, 0, 0, createInfo.width, createInfo.height);
@@ -102,42 +102,42 @@ namespace Pinewood
 		return Result::Success;
 	}
 
-	Result HLTexture2D::Destroy()
+	Result HLTexture2DArray::Destroy()
 	{
 		auto result = m_details->Destroy();
 		m_details = nullptr;
 		return result;
 	}
 
-	Result HLTexture2D::SetImage(const void* data, uint32_t mipLevel, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height)
+	Result HLTexture2DArray::SetImage(const void* data, uint32_t mipLevel, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height, uint32_t startIndex, uint32_t numTextures)
 	{
 		auto glFormat = Impl::GetGLFormat2(m_details->format);
-		m_details->gl->TextureSubImage2D(m_details->texture, mipLevel, xOffset, yOffset, width, height, glFormat.baseFormat, glFormat.sizeFormat, data);
+		m_details->gl->TextureSubImage3D(m_details->texture, mipLevel, xOffset, yOffset, startIndex, width, height, numTextures, glFormat.baseFormat, glFormat.sizeFormat, data);
 
 		return Result::Success;
 	}
 
-	Result HLTexture2D::GetImage(void* data, size_t bufferSize, uint32_t mipLevel, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height)
+	Result HLTexture2DArray::GetImage(void* data, size_t bufferSize, uint32_t mipLevel, uint32_t xOffset, uint32_t yOffset, uint32_t width, uint32_t height, uint32_t startIndex, uint32_t numTextures)
 	{
 		auto glFormat = Impl::GetGLFormat2(m_details->format);
-		m_details->gl->GetTextureSubImage(m_details->texture, mipLevel, xOffset, yOffset, 0, width, height, 0, glFormat.baseFormat, glFormat.sizeFormat, static_cast<GLsizei>(bufferSize), data);
+		m_details->gl->GetTextureSubImage(m_details->texture, mipLevel, xOffset, yOffset, startIndex, width, height, numTextures, glFormat.baseFormat, glFormat.sizeFormat, static_cast<GLsizei>(bufferSize), data);
 
 		return Result::Success;
 	}
 
-	Result HLTexture2D::GenerateMips()
+	Result HLTexture2DArray::GenerateMips()
 	{
 		m_details->gl->GenerateTextureMipmap(m_details->texture);
 
 		return Result::Success;
 	}
 
-	HLTexture2D::NativeHandle HLTexture2D::GetNativeHandle()
+	HLTexture2DArray::NativeHandle HLTexture2DArray::GetNativeHandle()
 	{
 		return m_details->texture;
 	}
 	
-	bool HLTexture2D::IsInitialized()
+	bool HLTexture2DArray::IsInitialized()
 	{
 		return m_details && m_details->gl;
 	}
